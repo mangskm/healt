@@ -41,6 +41,12 @@ Distance is stored in canonical kilometers. API input accepts `km` or `mi`; mile
 
 ## Migration workflow
 
+## Phase 6 dashboard
+
+Phase 6 adds no tables or migration. Dashboard reads existing user-scoped records; Alembic remains at `0005_exercise_tracking`.
+
+Its timezone-aware day boundaries are query-time calculations only; stored timestamps are not rewritten.
+
 From `backend/`, after setting `DATABASE_URL`:
 
 ```bash

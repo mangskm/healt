@@ -1,6 +1,6 @@
 # Personal Health Tracking Application
 
-A privacy-minded personal health and habit tracking application. Phase 5 adds manual Exercise Tracking. It does not provide medical advice.
+A privacy-minded personal health tracking application. Phase 6 adds a read-only Dashboard. It does not provide medical advice.
 
 ## Technology
 
@@ -27,4 +27,4 @@ See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for local setup, migration comman
 
 ## Project status
 
-Phases 0–5 are implemented. Planned health-recording features are listed in [docs/ROADMAP.md](docs/ROADMAP.md).
+Phases 0–6 are implemented. Planned health-recording features are listed in [docs/ROADMAP.md](docs/ROADMAP.md).

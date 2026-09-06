@@ -75,3 +75,7 @@ Meals and Meal Items are manually entered tracking data for the current local us
 - `GET`, `PATCH`, and `DELETE /api/v1/exercise-sessions/{session_id}` read, update, or delete an owned session (`204` for deletion).
 
 Activity types are `walking`, `running`, `cycling`, `strength_training`, `swimming`, `sports`, and `other`. `performed_at` needs a timezone and cannot be future; duration is a positive integer in minutes. Optional distance must include a positive `distance` and `distance_unit` of `km` or `mi`; responses expose unambiguous canonical `distance_km`. Optional `calories_burned_kcal` is manually entered and non-negative. No calorie estimation, recommendation, or exercise analytics is provided.
+
+## Dashboard
+
+`GET /api/v1/dashboard` is read-only. It returns profile summary, latest weight, active goals, and current-day meal/exercise totals. “Today” uses the Profile IANA timezone, or UTC when no timezone is configured. Nutrition sums known entered values and reports missing-item counts; it provides no targets, net calories, trends, scoring, or recommendations.

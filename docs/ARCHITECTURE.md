@@ -21,3 +21,7 @@ The frontend is a standalone single-page application. `src/services` owns HTTP c
 - Weight records, goals, meals, and exercise sessions use the local owner lookup and are filtered by `user_id` at repository level. Meal Items are accessed only through a Meal owned by that local user. Authentication will replace the lookup without changing these ownership relations.
 - Future domain modules must add models, a migration, schemas, repository/service behavior, API routes, tests, and documentation together.
 - Authentication, AI, analytics, and other health-recording domain functions are future phases.
+
+## Dashboard
+
+Dashboard is a read-only composition service over existing user-scoped records; it adds no model or table. It uses the Profile IANA timezone for local-day boundaries, falling back to UTC, converts those boundaries to UTC for timestamp queries, and returns direct sums only.

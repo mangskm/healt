@@ -4,6 +4,8 @@ import type { Goal, GoalInput, GoalUpdate } from "../types/goal";
 import type { Meal, MealInput, MealItem, MealItemInput } from "../types/meal";
 import type { ExerciseInput, ExerciseSession } from "../types/exercise";
 
+export interface Dashboard { timezone: string; date: string; profile: { preferred_name: string | null; weight_unit: string | null } | null; latest_weight: { weight_kg: number; recorded_at: string } | null; active_goals: { id: string; target_value_kg: number; target_date: string | null; status: string }[]; meals: { count: number; item_count: number; nutrition_item_count: number; nutrition_missing_item_count: number; calories_kcal: number; protein_g: number; carbohydrates_g: number; fat_g: number }; exercise: { count: number; duration_minutes: number; distance_km: number; distance_session_count: number; calories_burned_kcal: number; calories_entered_session_count: number }; }
+
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 
 export class ApiError extends Error {
@@ -165,4 +167,10 @@ export async function updateExerciseSession(id: string, payload: Partial<Exercis
 export async function deleteExerciseSession(id: string): Promise<void> {
   const response = await fetch(`${apiBaseUrl}/api/v1/exercise-sessions/${id}`, { method: "DELETE" });
   if (!response.ok) throw new ApiError(response.status, "Exercise session could not be deleted.");
+}
+
+export async function getDashboard(): Promise<Dashboard> {
+  const response = await fetch(`${apiBaseUrl}/api/v1/dashboard`);
+  if (!response.ok) throw new ApiError(response.status, "Dashboard could not be loaded.");
+  return response.json();
 }

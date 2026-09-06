@@ -1,6 +1,6 @@
 # Features
 
-## Implemented in Phases 0–5
+## Implemented in Phases 0–6
 
 - Responsive foundational Today page
 - Visible frontend-to-backend health connection status
@@ -17,6 +17,7 @@
 - Meals page with manual multiple-item entry, edit/delete flows, optional per-meal direct nutrition totals, and loading/empty/saving/error states
 - Exercise Session CRUD with local-user ownership, canonical km distance storage, manual optional calories, and pagination
 - Exercise page with activity, timestamp, duration, km/mi input, optional manual calories, edit/delete, and loading/empty/saving/error states
+- Read-only Dashboard with Profile-timezone daily Meal and Exercise summaries, latest weight, and active goals
 
 ## Not yet implemented
 

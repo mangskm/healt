@@ -24,10 +24,15 @@ Completed: manual Meal and Meal Item schema and migration, local-owner CRUD API,
 
 Completed: manual Exercise Session schema and migration, local-owner CRUD API, canonical km storage with km/mi input conversion, optional manually entered calories, Exercise page, tests, and PostgreSQL verification. No exercise plans, automatic calorie estimates, pace analysis, analytics, or recommendations are implemented.
 
+## Phase 6 — Dashboard
+
+Completed: read-only Dashboard endpoint and Today page using Profile timezone-aware daily summaries. No migration, analytics, targets, trends, scoring, or recommendations are implemented.
+
+Phase 7 — Analytics is planned and not implemented.
+
 ## Next phases
 
-1. Phase 6 — Dashboard
-2. Phase 7 — Analytics
+1. Phase 7 — Analytics
 3. Phase 8 — Notifications
 4. Phase 9 — Production Hardening
 
