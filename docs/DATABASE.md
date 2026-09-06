@@ -33,6 +33,12 @@ Migration `0004_food_tracking` adds `meals` and `meal_items`.
 
 Meal type and quantity-unit SQLAlchemy enums persist their lowercase `.value` strings. This matches the migration check constraints and API values.
 
+## Phase 5 schema
+
+Migration `0005_exercise_tracking` adds `exercise_sessions`, owned by `users`. It stores lowercase `activity_type`, timezone-aware `performed_at`, positive integer `duration_minutes`, optional canonical `distance_km`, optional manually entered `calories_burned_kcal`, optional 500-character note, and timestamps. `(user_id, performed_at)` supports reverse-chronological history. Distance and calories use `NUMERIC(10,3)` with positive/non-negative checks. `activity_type` enum values persist their `.value` strings, matching the API and migration constraints.
+
+Distance is stored in canonical kilometers. API input accepts `km` or `mi`; miles are multiplied by exact `1.609344` and the stored kilometer value is rounded half-up to 0.001 km.
+
 ## Migration workflow
 
 From `backend/`, after setting `DATABASE_URL`:

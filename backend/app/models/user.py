@@ -19,3 +19,4 @@ class User(Base):
     weight_records: Mapped[list["WeightRecord"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     goals: Mapped[list["Goal"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     meals: Mapped[list["Meal"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    exercise_sessions: Mapped[list["ExerciseSession"]] = relationship(back_populates="user", cascade="all, delete-orphan")

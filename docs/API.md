@@ -67,3 +67,11 @@ Meals and Meal Items are manually entered tracking data for the current local us
 - `DELETE /api/v1/meals/{meal_id}/items/{item_id}` deletes an item and returns `204`.
 
 `meal_type` is one of `breakfast`, `lunch`, `dinner`, `snack`, or `other`. `eaten_at` must include a timezone and cannot be in the future. An item requires a nonblank food name, positive quantity, and `g`, `ml`, `serving`, or `piece` unit. Optional calories and macronutrient values are per-entered-quantity tracking values and must be non-negative. No targets, recommendations, or automatic nutrition calculations are exposed.
+
+## Exercise sessions
+
+- `GET /api/v1/exercise-sessions?limit=50&offset=0` returns `{ items, total }` newest first; limit is 1–100.
+- `POST /api/v1/exercise-sessions` creates a session (`201`).
+- `GET`, `PATCH`, and `DELETE /api/v1/exercise-sessions/{session_id}` read, update, or delete an owned session (`204` for deletion).
+
+Activity types are `walking`, `running`, `cycling`, `strength_training`, `swimming`, `sports`, and `other`. `performed_at` needs a timezone and cannot be future; duration is a positive integer in minutes. Optional distance must include a positive `distance` and `distance_unit` of `km` or `mi`; responses expose unambiguous canonical `distance_km`. Optional `calories_burned_kcal` is manually entered and non-negative. No calorie estimation, recommendation, or exercise analytics is provided.

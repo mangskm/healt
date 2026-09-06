@@ -13,6 +13,7 @@ export function TodayPage() {
       <Link className="button-link secondary-button" to="/weight">Track weight</Link>
       <Link className="button-link secondary-button" to="/goals">Manage goals</Link>
       <Link className="button-link secondary-button" to="/meals">Track meals</Link>
+      <Link className="button-link secondary-button" to="/exercise">Track exercise</Link>
       <section className="status-card" aria-labelledby="service-status-title">
         <h2 id="service-status-title">Service status</h2>
         <ApiStatus />

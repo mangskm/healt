@@ -1,0 +1,15 @@
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { BrowserRouter } from "react-router-dom";
+import { describe, expect, it, vi } from "vitest";
+import { ExercisePage } from "./ExercisePage";
+
+const session = { id: "exercise-1", activity_type: "walking", performed_at: "2026-09-05T10:00:00Z", duration_minutes: 45, distance_km: 4.828, calories_burned_kcal: 180, note: "Evening walk", created_at: "", updated_at: "" };
+const renderPage = (fetchMock: ReturnType<typeof vi.fn>) => { vi.stubGlobal("fetch", fetchMock); return render(<BrowserRouter><ExercisePage /></BrowserRouter>); };
+
+describe("ExercisePage", () => {
+  it("shows an empty state", async () => { renderPage(vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({ items: [], total: 0 }) }))); expect(await screen.findByText("No exercise sessions yet. Add one above.")).toBeInTheDocument(); });
+  it("displays an entered session and deletes it", async () => { const fetchMock = vi.fn((_: string, options?: RequestInit) => Promise.resolve(options?.method === "DELETE" ? { ok: true } : { ok: true, json: () => Promise.resolve({ items: [session], total: 1 }) })); const user = userEvent.setup(); renderPage(fetchMock); expect(await screen.findByText(/walking · 45 min/)).toBeInTheDocument(); expect(screen.getByText(/Calories burned: 180 kcal/)).toBeInTheDocument(); await user.click(screen.getByRole("button", { name: "Delete" })); expect(await screen.findByText("Exercise session deleted.")).toBeInTheDocument(); });
+  it("validates and creates a miles session", async () => { const fetchMock = vi.fn((_: string, options?: RequestInit) => Promise.resolve(options?.method === "POST" ? { ok: true, json: () => Promise.resolve(session) } : { ok: true, json: () => Promise.resolve({ items: [], total: 0 }) })); const user = userEvent.setup(); renderPage(fetchMock); await screen.findByText("No exercise sessions yet. Add one above."); await user.click(screen.getByRole("button", { name: "Save exercise session" })); expect(await screen.findByRole("alert")).toHaveTextContent("Duration must be a whole number greater than zero."); await user.type(screen.getByLabelText("Duration"), "45"); await user.type(screen.getByLabelText("Distance"), "3"); await user.selectOptions(screen.getByLabelText("Distance unit"), "mi"); await user.click(screen.getByRole("button", { name: "Save exercise session" })); expect(await screen.findByText("Exercise session saved.")).toBeInTheDocument(); expect(fetchMock.mock.calls.some(([, options]) => options && (options as RequestInit).body?.toString().includes('"distance_unit":"mi"'))).toBe(true); });
+  it("loads a session for editing", async () => { renderPage(vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({ items: [session], total: 1 }) }))); const user = userEvent.setup(); await screen.findByText(/walking · 45 min/); await user.click(screen.getByRole("button", { name: "Edit" })); expect(screen.getByRole("heading", { name: "Edit exercise session" })).toBeInTheDocument(); });
+});

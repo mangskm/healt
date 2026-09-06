@@ -12,12 +12,12 @@ FastAPI router -> service -> repository -> SQLAlchemy -> PostgreSQL
 
 The frontend is a standalone single-page application. `src/services` owns HTTP calls, features own UI behavior, and pages compose features. The backend uses a deliberately small layered structure: routers own HTTP concerns, services coordinate business behavior, and repositories execute data access.
 
-`GET /api/v1/health` checks database connectivity through this full backend path. Profile, Weight Record, Goal, and Meal modules follow the same path. Weight conversion is centralized in the backend service layer and the frontend utility layer rather than duplicated across UI components. Meal lists load their Meal Items with `selectinload`, avoiding per-meal item queries.
+`GET /api/v1/health` checks database connectivity through this full backend path. Profile, Weight Record, Goal, Meal, and Exercise modules follow the same path. Unit conversion is centralized in backend services and frontend utilities rather than duplicated across UI components. Meal lists load their Meal Items with `selectinload`, avoiding per-meal item queries.
 
 ## Boundaries
 
 - PostgreSQL is the production and Docker development datastore.
 - Alembic owns schema version history. Phase 1 introduces one local `users` record and its one-to-one `user_profiles` record. The temporary single-user selection belongs only to the pre-authentication phase; authentication will replace it with an authenticated owner lookup.
-- Weight records, goals, and meals use the local owner lookup and are filtered by `user_id` at repository level. Meal Items are accessed only through a Meal owned by that local user. Authentication will replace the lookup without changing these ownership relations.
+- Weight records, goals, meals, and exercise sessions use the local owner lookup and are filtered by `user_id` at repository level. Meal Items are accessed only through a Meal owned by that local user. Authentication will replace the lookup without changing these ownership relations.
 - Future domain modules must add models, a migration, schemas, repository/service behavior, API routes, tests, and documentation together.
 - Authentication, AI, analytics, and other health-recording domain functions are future phases.

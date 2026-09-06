@@ -20,14 +20,15 @@ Completed: target-weight Goal schema and migration, canonical kg conversion, man
 
 Completed: manual Meal and Meal Item schema and migration, local-owner CRUD API, entered quantity units, optional nutrition values, Meals page, tests, and PostgreSQL verification. Nutrition is tracking-only: no calorie targets, macro targets, food database, dieting, fasting, recommendation, or analytics behavior is implemented.
 
+## Phase 5 — Exercise Tracking
+
+Completed: manual Exercise Session schema and migration, local-owner CRUD API, canonical km storage with km/mi input conversion, optional manually entered calories, Exercise page, tests, and PostgreSQL verification. No exercise plans, automatic calorie estimates, pace analysis, analytics, or recommendations are implemented.
+
 ## Next phases
 
-1. Phase 5 — Water / Activity / Sleep
-2. Phase 6 — Habits
-3. Phase 7 — Dashboard
-4. Phase 8 — Analytics
-5. Phase 9 — AI assistant with strict non-diagnostic safety boundaries
-6. Phase 10 — Authentication and privacy
-7. Phase 11 — Production hardening
+1. Phase 6 — Dashboard
+2. Phase 7 — Analytics
+3. Phase 8 — Notifications
+4. Phase 9 — Production Hardening
 
 Each phase requires its own reviewed data model, migration, API contract, UI, tests, and documentation updates. No calorie restriction, fasting system, aggressive weight-loss mechanics, diagnosis, prescription, or treatment guidance is planned.

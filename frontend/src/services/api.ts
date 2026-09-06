@@ -2,6 +2,7 @@ import type { Profile, ProfileUpdate } from "../types/profile";
 import type { WeightRecord, WeightRecordInput, WeightRecordList, WeightRecordUpdate } from "../types/weight";
 import type { Goal, GoalInput, GoalUpdate } from "../types/goal";
 import type { Meal, MealInput, MealItem, MealItemInput } from "../types/meal";
+import type { ExerciseInput, ExerciseSession } from "../types/exercise";
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 
@@ -141,4 +142,27 @@ export async function updateMealItem(mealId: string, itemId: string, payload: Pa
 export async function deleteMealItem(mealId: string, itemId: string): Promise<void> {
   const response = await fetch(`${apiBaseUrl}/api/v1/meals/${mealId}/items/${itemId}`, { method: "DELETE" });
   if (!response.ok) throw new ApiError(response.status, "Meal item could not be deleted.");
+}
+
+export async function listExerciseSessions(): Promise<{ items: ExerciseSession[]; total: number }> {
+  const response = await fetch(`${apiBaseUrl}/api/v1/exercise-sessions?limit=50&offset=0`);
+  if (!response.ok) throw new ApiError(response.status, "Exercise sessions could not be loaded.");
+  return response.json();
+}
+
+export async function createExerciseSession(payload: ExerciseInput): Promise<ExerciseSession> {
+  const response = await fetch(`${apiBaseUrl}/api/v1/exercise-sessions`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  if (!response.ok) throw new ApiError(response.status, "Exercise session could not be saved.");
+  return response.json();
+}
+
+export async function updateExerciseSession(id: string, payload: Partial<ExerciseInput>): Promise<ExerciseSession> {
+  const response = await fetch(`${apiBaseUrl}/api/v1/exercise-sessions/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  if (!response.ok) throw new ApiError(response.status, "Exercise session could not be updated.");
+  return response.json();
+}
+
+export async function deleteExerciseSession(id: string): Promise<void> {
+  const response = await fetch(`${apiBaseUrl}/api/v1/exercise-sessions/${id}`, { method: "DELETE" });
+  if (!response.ok) throw new ApiError(response.status, "Exercise session could not be deleted.");
 }

@@ -15,6 +15,7 @@
 - Database schema changes require an Alembic migration. Do not use `create_all` as application startup migration logic.
 - When an input supports multiple units, store one documented canonical value and keep conversion logic in a shared service or utility.
 - Meal Items retain the entered quantity and unit; do not add conversion, nutrition-target, or recommendation logic without a separately approved phase.
+- Exercise distance is stored canonically in kilometers; manual calorie-burn values must never be estimated by the application.
 
 ## Engineering rules
 
