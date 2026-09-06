@@ -1,6 +1,6 @@
 # Features
 
-## Implemented in Phases 0–7
+## Implemented in Phases 0–8
 
 - Responsive foundational Today page
 - Visible frontend-to-backend health connection status
@@ -20,6 +20,8 @@
 - Read-only Dashboard with Profile-timezone daily Meal and Exercise summaries, latest weight, and active goals
 - Read-only 7d/30d Analytics page for descriptive Weight, entered Nutrition, and Exercise history
 
+- User-managed daily/weekly in-app reminders with Profile-timezone evaluation, due/upcoming state, CRUD management, and Today dashboard display
+
 ## Not yet implemented
 
-Water tracking, sleep tracking, habits, AI assistant, authentication, notifications, and Phase 8+ features are deliberately deferred to their assigned phases. Food databases, barcode scanning, food recognition, calorie targets, nutrition recommendations, dieting features, exercise recommendations, pace analysis, automatic calorie estimation, predictive trends, and recommendations are not implemented.
+Water tracking, sleep tracking, habits, AI assistant, authentication, external notification delivery, and Phase 9+ features are deliberately deferred to their assigned phases. Push, email, SMS, background notification workers, food databases, barcode scanning, food recognition, calorie targets, nutrition recommendations, dieting features, exercise recommendations, pace analysis, automatic calorie estimation, predictive trends, and recommendations are not implemented.

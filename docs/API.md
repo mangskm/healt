@@ -83,3 +83,9 @@ Activity types are `walking`, `running`, `cycling`, `strength_training`, `swimmi
 ## Analytics
 
 `GET /api/v1/analytics?period=7d|30d` returns read-only descriptive history. Periods mean 7 or 30 local calendar dates including today, using Profile timezone or UTC fallback. Weight series selects the latest record per local date and never fabricates missing dates. Meal and Exercise daily series include zero days; nutrition sums direct entered values, counts an item as missing only when every nutrition field is absent, and never imputes values. Exercise totals duration, canonical kilometers, manually entered calories, and activity types. No analytics table or migration exists.
+
+## Reminders and notifications
+
+All reminders belong to the local user. `GET /api/v1/reminders`, `POST /api/v1/reminders`, `GET/PATCH/DELETE /api/v1/reminders/{id}` provide CRUD (`201` for create, `204` for delete). `reminder_type` is `weight`, `meal`, `exercise`, or `custom`; `schedule_type` is `daily` or `weekly`. Daily schedules require `day_of_week: null`; weekly schedules require `0`–`6` where Monday is `0`. Titles are required and trimmed; notes are optional.
+
+`GET /api/v1/notifications/today` is read-only. It returns only enabled reminders applicable to the local calendar day, sorted by local `reminder_time`, with `upcoming` before its local time and `due` at or after it. It uses the Profile IANA timezone or UTC fallback. It does not send push, email, SMS, or any background notification.

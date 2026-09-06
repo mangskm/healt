@@ -1,6 +1,6 @@
 # Personal Health Tracking Application
 
-A privacy-minded personal health tracking application. Phase 7 adds read-only descriptive Analytics alongside the Dashboard. It does not provide medical advice.
+A privacy-minded personal health tracking application. Phase 8 adds simple in-app scheduled reminders alongside the Dashboard and Analytics. It does not provide medical advice.
 
 ## Technology
 
@@ -19,7 +19,7 @@ A privacy-minded personal health tracking application. Phase 7 adds read-only de
 
 3. Open `http://localhost:5173`. The API documentation is available at `http://localhost:8000/docs`.
 
-The frontend displays the API health status and provides Profile, Weight, Goals, Meals, Exercise, and Analytics pages at `/profile`, `/weight`, `/goals`, `/meals`, `/exercise`, and `/analytics`.
+The frontend displays the API health status and provides Profile, Weight, Goals, Meals, Exercise, Analytics, and Reminders pages at `/profile`, `/weight`, `/goals`, `/meals`, `/exercise`, `/analytics`, and `/reminders`.
 
 ## Local development
 
@@ -27,4 +27,4 @@ See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for local setup, migration comman
 
 ## Project status
 
-Phases 0–7 are implemented. The new `/analytics` page provides descriptive 7/30-day history only.
+Phases 0–8 are implemented and verified. Reminders are evaluated in-app when data is requested; push, email, SMS, and background delivery are not implemented.

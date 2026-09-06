@@ -11,7 +11,7 @@ export function TodayPage() {
       <p className="eyebrow">Personal Health Tracking</p>
       <h1>Today</h1>
       <p className="intro">A direct overview of your tracked information for today.</p>
-      <div className="quick-actions"><Link className="button-link" to="/weight">Add Weight</Link><Link className="button-link secondary-button" to="/meals">Add Meal</Link><Link className="button-link secondary-button" to="/exercise">Add Exercise</Link><Link className="button-link secondary-button" to="/goals">Manage Goals</Link></div>
+      <div className="quick-actions"><Link className="button-link" to="/weight">Add Weight</Link><Link className="button-link secondary-button" to="/meals">Add Meal</Link><Link className="button-link secondary-button" to="/exercise">Add Exercise</Link><Link className="button-link secondary-button" to="/goals">Manage Goals</Link><Link className="button-link secondary-button" to="/reminders">Manage reminders</Link></div>
       <Link className="button-link secondary-button" to="/analytics">View analytics</Link>
       {error && <p role="alert">Dashboard could not be loaded. Your tracking pages are still available above.</p>}
       {!dashboard && !error && <p>Loading dashboard…</p>}
@@ -21,6 +21,7 @@ export function TodayPage() {
         <article className="status-card"><h2>Active goals</h2>{dashboard.active_goals.length ? dashboard.active_goals.map((goal) => <p key={goal.id}>{goal.target_value_kg} kg{goal.target_date ? ` · ${goal.target_date}` : ""}</p>) : <p>No active goals.</p>}</article>
         <article className="status-card"><h2>Meals today</h2>{dashboard.meals.count ? <><p>{dashboard.meals.count} meals · {dashboard.meals.item_count} items</p><p>Entered nutrition: {dashboard.meals.calories_kcal} kcal · {dashboard.meals.protein_g} g protein</p>{dashboard.meals.nutrition_missing_item_count > 0 && <p>Some food items have missing nutrition values.</p>}</> : <p>No meals today.</p>}</article>
         <article className="status-card"><h2>Exercise today</h2>{dashboard.exercise.count ? <><p>{dashboard.exercise.count} sessions · {dashboard.exercise.duration_minutes} min</p>{dashboard.exercise.distance_session_count > 0 && <p>{dashboard.exercise.distance_km} km entered distance</p>}{dashboard.exercise.calories_entered_session_count > 0 && <p>{dashboard.exercise.calories_burned_kcal} kcal manually entered</p>}</> : <p>No exercise today.</p>}</article>
+        <article className="status-card"><h2>Today's reminders</h2>{dashboard.reminders.length ? dashboard.reminders.map((reminder) => <p key={reminder.id}><strong>{reminder.reminder_time.slice(0, 5)}</strong> · {reminder.title} · {reminder.status === "due" ? "Due" : "Upcoming"}</p>) : <><p>No reminders scheduled for today.</p><Link className="button-link secondary-button" to="/reminders">Manage reminders</Link></>}</article>
       </section>}
       <section className="status-card" aria-labelledby="service-status-title">
         <h2 id="service-status-title">Service status</h2>

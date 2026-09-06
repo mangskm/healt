@@ -11,7 +11,8 @@ from app.models.exercise import ExerciseSession
 from app.repositories.profile import ProfileRepository
 from app.repositories.user import UserRepository
 from app.repositories.weight import WeightRecordRepository
-from app.schemas.dashboard import DashboardExercise, DashboardExerciseSummary, DashboardGoal, DashboardMeal, DashboardMealSummary, DashboardProfile, DashboardResponse, DashboardWeight
+from app.schemas.dashboard import DashboardExercise, DashboardExerciseSummary, DashboardGoal, DashboardMeal, DashboardMealSummary, DashboardProfile, DashboardReminder, DashboardResponse, DashboardWeight
+from app.services.reminder import ReminderService
 
 
 class DashboardService:
@@ -41,6 +42,7 @@ class DashboardService:
         nutrition_complete = sum(all(getattr(item, field) is not None for field in ("calories_kcal", "protein_g", "carbohydrates_g", "fat_g")) for item in meal_items)
         distance_sessions = [session for session in sessions if session.distance_km is not None]
         calorie_sessions = [session for session in sessions if session.calories_burned_kcal is not None]
+        today_reminders = ReminderService(self._db).today(current).reminders
         return DashboardResponse(
             timezone=timezone_name, date=local_day,
             profile=DashboardProfile(preferred_name=profile.preferred_name, weight_unit=profile.weight_unit.value if profile.weight_unit else None) if profile else None,
@@ -48,4 +50,5 @@ class DashboardService:
             active_goals=[DashboardGoal(id=goal.id, target_value_kg=goal.target_value_kg, target_date=goal.target_date, status=goal.status.value) for goal in goals],
             meals=DashboardMealSummary(count=len(meals), items=[DashboardMeal(id=meal.id, meal_type=meal.meal_type.value, eaten_at=meal.eaten_at, item_count=len(meal.items)) for meal in meals], item_count=len(meal_items), nutrition_item_count=nutrition_complete, nutrition_missing_item_count=len(meal_items)-nutrition_complete, calories_kcal=float(known("calories_kcal")), protein_g=float(known("protein_g")), carbohydrates_g=float(known("carbohydrates_g")), fat_g=float(known("fat_g"))),
             exercise=DashboardExerciseSummary(count=len(sessions), items=[DashboardExercise(id=session.id, activity_type=session.activity_type.value, performed_at=session.performed_at, duration_minutes=session.duration_minutes, distance_km=session.distance_km, calories_burned_kcal=session.calories_burned_kcal) for session in sessions], duration_minutes=sum(session.duration_minutes for session in sessions), distance_km=float(sum((Decimal(str(session.distance_km)) for session in distance_sessions), Decimal("0"))), distance_session_count=len(distance_sessions), calories_burned_kcal=float(sum((Decimal(str(session.calories_burned_kcal)) for session in calorie_sessions), Decimal("0"))), calories_entered_session_count=len(calorie_sessions)),
+            reminders=[DashboardReminder(id=reminder.id, reminder_type=reminder.reminder_type.value, title=reminder.title, reminder_time=reminder.reminder_time.isoformat(), schedule_type=reminder.schedule_type.value, day_of_week=reminder.day_of_week, status=reminder.status) for reminder in today_reminders],
         )

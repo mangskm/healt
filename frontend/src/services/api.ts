@@ -3,8 +3,9 @@ import type { WeightRecord, WeightRecordInput, WeightRecordList, WeightRecordUpd
 import type { Goal, GoalInput, GoalUpdate } from "../types/goal";
 import type { Meal, MealInput, MealItem, MealItemInput } from "../types/meal";
 import type { ExerciseInput, ExerciseSession } from "../types/exercise";
+import type { Reminder, ReminderInput, TodayNotifications } from "../types/reminder";
 
-export interface Dashboard { timezone: string; date: string; profile: { preferred_name: string | null; weight_unit: string | null } | null; latest_weight: { weight_kg: number; recorded_at: string } | null; active_goals: { id: string; target_value_kg: number; target_date: string | null; status: string }[]; meals: { count: number; item_count: number; nutrition_item_count: number; nutrition_missing_item_count: number; calories_kcal: number; protein_g: number; carbohydrates_g: number; fat_g: number }; exercise: { count: number; duration_minutes: number; distance_km: number; distance_session_count: number; calories_burned_kcal: number; calories_entered_session_count: number }; }
+export interface Dashboard { timezone: string; date: string; profile: { preferred_name: string | null; weight_unit: string | null } | null; latest_weight: { weight_kg: number; recorded_at: string } | null; active_goals: { id: string; target_value_kg: number; target_date: string | null; status: string }[]; meals: { count: number; item_count: number; nutrition_item_count: number; nutrition_missing_item_count: number; calories_kcal: number; protein_g: number; carbohydrates_g: number; fat_g: number }; exercise: { count: number; duration_minutes: number; distance_km: number; distance_session_count: number; calories_burned_kcal: number; calories_entered_session_count: number }; reminders: { id: string; reminder_type: string; title: string; reminder_time: string; schedule_type: string; day_of_week: number | null; status: "upcoming" | "due" }[]; }
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 
@@ -172,6 +173,15 @@ export async function deleteExerciseSession(id: string): Promise<void> {
 export async function getDashboard(): Promise<Dashboard> {
   const response = await fetch(`${apiBaseUrl}/api/v1/dashboard`);
   if (!response.ok) throw new ApiError(response.status, "Dashboard could not be loaded.");
-  return response.json();
+  const dashboard: unknown = await response.json();
+  if (!dashboard || typeof dashboard !== "object" || !Array.isArray((dashboard as { reminders?: unknown }).reminders)) {
+    throw new ApiError(response.status, "The Dashboard API response is missing reminders. Restart the current Phase 8 backend after applying its migration.");
+  }
+  return dashboard as Dashboard;
 }
 export async function getAnalytics(period: "7d" | "30d") { const response=await fetch(`${apiBaseUrl}/api/v1/analytics?period=${period}`); if(!response.ok) throw new ApiError(response.status,"Analytics could not be loaded."); return response.json(); }
+export async function listReminders(): Promise<{ items: Reminder[]; total: number }> { const response = await fetch(`${apiBaseUrl}/api/v1/reminders`); if (!response.ok) throw new ApiError(response.status, "Reminders could not be loaded."); return response.json(); }
+export async function createReminder(payload: ReminderInput): Promise<Reminder> { const response = await fetch(`${apiBaseUrl}/api/v1/reminders`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); if (!response.ok) throw new ApiError(response.status, "Reminder could not be saved."); return response.json(); }
+export async function updateReminder(id: string, payload: Partial<ReminderInput>): Promise<Reminder> { const response = await fetch(`${apiBaseUrl}/api/v1/reminders/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); if (!response.ok) throw new ApiError(response.status, "Reminder could not be updated."); return response.json(); }
+export async function deleteReminder(id: string): Promise<void> { const response = await fetch(`${apiBaseUrl}/api/v1/reminders/${id}`, { method: "DELETE" }); if (!response.ok) throw new ApiError(response.status, "Reminder could not be deleted."); }
+export async function getTodayNotifications(): Promise<TodayNotifications> { const response = await fetch(`${apiBaseUrl}/api/v1/notifications/today`); if (!response.ok) throw new ApiError(response.status, "Today's reminders could not be loaded."); return response.json(); }

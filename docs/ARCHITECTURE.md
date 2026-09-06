@@ -29,3 +29,7 @@ Dashboard is a read-only composition service over existing user-scoped records; 
 ## Analytics
 
 Analytics is a read-only service over existing records. It groups 7d and 30d local calendar days through the Profile timezone (UTC fallback), converts boundaries to UTC queries, and adds no persistence or migration. It returns the latest Weight per day, direct nutrition values with explicit missing-item metadata, and Exercise duration/canonical-km/manual-calorie totals with activity breakdowns.
+
+## Reminders
+
+Reminders follow Router → Service → Repository and persist user-owned schedules. `GET /notifications/today` evaluates enabled daily/weekly schedules only when requested, using Profile timezone or UTC fallback. Local wall-clock `reminder_time` remains a database `TIME`, not a UTC timestamp. There are no occurrence rows, background jobs, push, email, SMS, or external delivery providers.

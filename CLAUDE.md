@@ -18,6 +18,7 @@
 - Exercise distance is stored canonically in kilometers; manual calorie-burn values must never be estimated by the application.
 - Dashboard is read-only composition. Its “today” range uses the Profile IANA timezone, falling back to UTC, and must not introduce analytics or recommendations.
 - Analytics is also read-only: use Profile timezone/UTC fallback, direct historical aggregates, and no recommendations or predictions.
+- Reminders are user-managed in-app schedules. Interpret their stored local `TIME` through the Profile timezone (UTC fallback); never add background delivery, external notification providers, or inferred/medical reminders in this phase.
 
 ## Engineering rules
 

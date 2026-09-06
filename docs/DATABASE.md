@@ -51,6 +51,10 @@ Its timezone-aware day boundaries are query-time calculations only; stored times
 
 Phase 7 creates no table or migration; Alembic remains `0005_exercise_tracking`. Weight chart series use the latest measurement per local day without fabricating missing days. Nutrition and Exercise are direct entered-data aggregates. An item is marked missing only when all nutrition fields are absent; partial entered values are summed and never imputed. Exercise distance remains canonical kilometers and calories remain manually entered.
 
+## Phase 8 reminders
+
+Migration `0006_notifications` adds `reminders`, owned by `users`. It stores lowercase `reminder_type` (`weight`, `meal`, `exercise`, `custom`), a required trimmed title, local wall-clock `reminder_time` (`TIME`), lowercase `schedule_type` (`daily`, `weekly`), optional weekday, enabled state, optional note, and timestamps. A database check enforces daily schedules have no weekday and weekly schedules have weekday `0` (Monday) through `6` (Sunday). The migration is reversible. It does not store notification occurrences, delivery history, or external notification state.
+
 From `backend/`, after setting `DATABASE_URL`:
 
 ```bash

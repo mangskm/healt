@@ -30,11 +30,14 @@ Completed: read-only Dashboard endpoint and Today page using Profile timezone-aw
 
 ## Phase 7 — Analytics
 
-Implemented: descriptive 7/30-day weight, entered nutrition, and exercise summaries with local-calendar grouping. Phase 8 Notifications remains planned and not implemented.
+Implemented: descriptive 7/30-day weight, entered nutrition, and exercise summaries with local-calendar grouping.
+
+## Phase 8 — Notifications & Reminders
+
+Completed: local-user, in-app daily/weekly reminders with Profile-timezone due/upcoming evaluation, CRUD management, Today dashboard integration, automated tests, and PostgreSQL migration/smoke verification. No push, email, SMS, background worker, or delivery history is implemented.
 
 ## Next phases
 
-1. Phase 8 — Notifications
-2. Phase 9 — Production Hardening
+1. Phase 9 — Production Hardening
 
 Each phase requires its own reviewed data model, migration, API contract, UI, tests, and documentation updates. No calorie restriction, fasting system, aggressive weight-loss mechanics, diagnosis, prescription, or treatment guidance is planned.

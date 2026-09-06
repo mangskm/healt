@@ -60,6 +60,16 @@ class DashboardExerciseSummary(BaseModel):
     calories_entered_session_count: int
 
 
+class DashboardReminder(BaseModel):
+    id: UUID
+    reminder_type: str
+    title: str
+    reminder_time: str
+    schedule_type: str
+    day_of_week: int | None
+    status: str
+
+
 class DashboardResponse(BaseModel):
     timezone: str
     date: date
@@ -68,3 +78,4 @@ class DashboardResponse(BaseModel):
     active_goals: list[DashboardGoal]
     meals: DashboardMealSummary
     exercise: DashboardExerciseSummary
+    reminders: list[DashboardReminder]
