@@ -25,4 +25,4 @@ Frontend tests cover the health indicator, Profile save flow, Weight behavior, G
 
 Dashboard verification covers empty states plus backend timezone/day-boundary and direct-sum behavior. PostgreSQL smoke testing uses only synthetic records and restores the Profile after use.
 
-Analytics tests cover local-day period boundaries, latest-weight-per-day selection, direct nutrition/exercise aggregation, and UTC fallback. PostgreSQL smoke tests use a disposable verification database.
+Analytics tests cover local-day period boundaries, latest-weight-per-day selection, direct nutrition/exercise aggregation, and UTC fallback. Session-lifecycle regression coverage verifies cleanup when request handling raises and repeated Dashboard/Analytics requests. PostgreSQL smoke tests use a disposable verification database.
