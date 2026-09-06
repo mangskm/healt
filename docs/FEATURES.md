@@ -1,6 +1,6 @@
 # Features
 
-## Implemented in Phases 0–6
+## Implemented in Phases 0–7
 
 - Responsive foundational Today page
 - Visible frontend-to-backend health connection status
@@ -18,7 +18,8 @@
 - Exercise Session CRUD with local-user ownership, canonical km distance storage, manual optional calories, and pagination
 - Exercise page with activity, timestamp, duration, km/mi input, optional manual calories, edit/delete, and loading/empty/saving/error states
 - Read-only Dashboard with Profile-timezone daily Meal and Exercise summaries, latest weight, and active goals
+- Read-only 7d/30d Analytics page for descriptive Weight, entered Nutrition, and Exercise history
 
 ## Not yet implemented
 
-Water tracking, sleep tracking, habits, dashboard data, analytics, AI assistant, authentication, and notifications are deliberately deferred to their assigned phases. Food databases, barcode scanning, food recognition, calorie targets, nutrition recommendations, dieting features, exercise recommendations, pace analysis, and automatic calorie estimation are not implemented.
+Water tracking, sleep tracking, habits, AI assistant, authentication, notifications, and Phase 8+ features are deliberately deferred to their assigned phases. Food databases, barcode scanning, food recognition, calorie targets, nutrition recommendations, dieting features, exercise recommendations, pace analysis, automatic calorie estimation, predictive trends, and recommendations are not implemented.

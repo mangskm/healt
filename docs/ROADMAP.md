@@ -28,12 +28,13 @@ Completed: manual Exercise Session schema and migration, local-owner CRUD API, c
 
 Completed: read-only Dashboard endpoint and Today page using Profile timezone-aware daily summaries. No migration, analytics, targets, trends, scoring, or recommendations are implemented.
 
-Phase 7 — Analytics is planned and not implemented.
+## Phase 7 — Analytics
+
+Implemented: descriptive 7/30-day weight, entered nutrition, and exercise summaries with local-calendar grouping. Phase 8 Notifications remains planned and not implemented.
 
 ## Next phases
 
-1. Phase 7 — Analytics
-3. Phase 8 — Notifications
-4. Phase 9 — Production Hardening
+1. Phase 8 — Notifications
+2. Phase 9 — Production Hardening
 
 Each phase requires its own reviewed data model, migration, API contract, UI, tests, and documentation updates. No calorie restriction, fasting system, aggressive weight-loss mechanics, diagnosis, prescription, or treatment guidance is planned.

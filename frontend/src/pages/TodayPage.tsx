@@ -12,6 +12,7 @@ export function TodayPage() {
       <h1>Today</h1>
       <p className="intro">A direct overview of your tracked information for today.</p>
       <div className="quick-actions"><Link className="button-link" to="/weight">Add Weight</Link><Link className="button-link secondary-button" to="/meals">Add Meal</Link><Link className="button-link secondary-button" to="/exercise">Add Exercise</Link><Link className="button-link secondary-button" to="/goals">Manage Goals</Link></div>
+      <Link className="button-link secondary-button" to="/analytics">View analytics</Link>
       {error && <p role="alert">Dashboard could not be loaded. Your tracking pages are still available above.</p>}
       {!dashboard && !error && <p>Loading dashboard…</p>}
       {dashboard && <section className="dashboard-grid">

@@ -47,6 +47,10 @@ Phase 6 adds no tables or migration. Dashboard reads existing user-scoped record
 
 Its timezone-aware day boundaries are query-time calculations only; stored timestamps are not rewritten.
 
+## Phase 7 analytics
+
+Phase 7 creates no table or migration; Alembic remains `0005_exercise_tracking`. Weight chart series use the latest measurement per local day without fabricating missing days. Nutrition and Exercise are direct entered-data aggregates. An item is marked missing only when all nutrition fields are absent; partial entered values are summed and never imputed. Exercise distance remains canonical kilometers and calories remain manually entered.
+
 From `backend/`, after setting `DATABASE_URL`:
 
 ```bash

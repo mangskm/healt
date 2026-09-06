@@ -174,3 +174,4 @@ export async function getDashboard(): Promise<Dashboard> {
   if (!response.ok) throw new ApiError(response.status, "Dashboard could not be loaded.");
   return response.json();
 }
+export async function getAnalytics(period: "7d" | "30d") { const response=await fetch(`${apiBaseUrl}/api/v1/analytics?period=${period}`); if(!response.ok) throw new ApiError(response.status,"Analytics could not be loaded."); return response.json(); }

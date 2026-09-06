@@ -79,3 +79,7 @@ Activity types are `walking`, `running`, `cycling`, `strength_training`, `swimmi
 ## Dashboard
 
 `GET /api/v1/dashboard` is read-only. It returns profile summary, latest weight, active goals, and current-day meal/exercise totals. “Today” uses the Profile IANA timezone, or UTC when no timezone is configured. Nutrition sums known entered values and reports missing-item counts; it provides no targets, net calories, trends, scoring, or recommendations.
+
+## Analytics
+
+`GET /api/v1/analytics?period=7d|30d` returns read-only descriptive history. Periods mean 7 or 30 local calendar dates including today, using Profile timezone or UTC fallback. Weight series selects the latest record per local date and never fabricates missing dates. Meal and Exercise daily series include zero days; nutrition sums direct entered values, counts an item as missing only when every nutrition field is absent, and never imputes values. Exercise totals duration, canonical kilometers, manually entered calories, and activity types. No analytics table or migration exists.

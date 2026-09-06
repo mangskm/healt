@@ -6,6 +6,7 @@ import { WeightPage } from "./pages/WeightPage";
 import { GoalsPage } from "./pages/GoalsPage";
 import { MealsPage } from "./pages/MealsPage";
 import { ExercisePage } from "./pages/ExercisePage";
+import { AnalyticsPage } from "./pages/AnalyticsPage";
 
 export function App() {
   return (
@@ -16,6 +17,7 @@ export function App() {
       <Route path="/goals" element={<GoalsPage />} />
       <Route path="/meals" element={<MealsPage />} />
       <Route path="/exercise" element={<ExercisePage />} />
+      <Route path="/analytics" element={<AnalyticsPage />} />
       <Route path="*" element={<TodayPage />} />
     </Routes>
   );

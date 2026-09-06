@@ -17,6 +17,7 @@
 - Meal Items retain the entered quantity and unit; do not add conversion, nutrition-target, or recommendation logic without a separately approved phase.
 - Exercise distance is stored canonically in kilometers; manual calorie-burn values must never be estimated by the application.
 - Dashboard is read-only composition. Its “today” range uses the Profile IANA timezone, falling back to UTC, and must not introduce analytics or recommendations.
+- Analytics is also read-only: use Profile timezone/UTC fallback, direct historical aggregates, and no recommendations or predictions.
 
 ## Engineering rules
 
