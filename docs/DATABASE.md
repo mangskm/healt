@@ -55,6 +55,14 @@ Phase 7 creates no table or migration; Alembic remains `0005_exercise_tracking`.
 
 Migration `0006_notifications` adds `reminders`, owned by `users`. It stores lowercase `reminder_type` (`weight`, `meal`, `exercise`, `custom`), a required trimmed title, local wall-clock `reminder_time` (`TIME`), lowercase `schedule_type` (`daily`, `weekly`), optional weekday, enabled state, optional note, and timestamps. A database check enforces daily schedules have no weekday and weekly schedules have weekday `0` (Monday) through `6` (Sunday). The migration is reversible. It does not store notification occurrences, delivery history, or external notification state.
 
+## Phase 9 authentication
+
+Migration `0007_authentication` preserves every existing `users.id` and its related health records. It adds nullable `email` and `password_hash` fields so a legacy single placeholder user can be claimed safely, plus a non-null `is_active` flag. It creates `auth_sessions`, containing a UUID, user foreign key, SHA-256 token hash, created/expiry timestamps, and optional revocation timestamp. The raw random session token is never stored in the database.
+
+Use `python -m app.cli.bootstrap_user --email you@example.com` from `backend/` to interactively create credentials for an empty database or claim exactly one uncredentialed legacy user. The command requires a password of at least 12 characters and refuses multiple users or a user that already has credentials; it therefore does not select a health-data owner ambiguously. Migration `0007_authentication` is reversible without deleting existing health-tracking records.
+
+In Docker Compose, the one-off `migrate` service runs `alembic upgrade head` only after PostgreSQL is healthy. The backend never calls `Base.metadata.create_all()` and does not race another backend instance to run migrations.
+
 From `backend/`, after setting `DATABASE_URL`:
 
 ```bash

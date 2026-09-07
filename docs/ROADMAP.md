@@ -6,7 +6,7 @@ Completed foundation: project structure, React/FastAPI applications, PostgreSQL 
 
 ## Phase 1 — Profile
 
-Completed: local user/profile schema and migration, profile read/update API, frontend Profile page, validation, tests, and documentation. Authentication is deliberately not included; the current local-owner placeholder will be replaced in Phase 9.
+Completed: user/profile schema and migration, profile read/update API, frontend Profile page, validation, tests, and documentation. Phase 9 later adds authenticated ownership without changing the user UUID that owns existing records.
 
 ## Phase 2 — Weight Tracking
 
@@ -38,6 +38,6 @@ Completed: local-user, in-app daily/weekly reminders with Profile-timezone due/u
 
 ## Next phases
 
-1. Phase 9 — Production Hardening
+1. Phase 9 — Production Hardening (in progress: 9A authentication/authorization and 9B deployment hardening complete locally; 9C isolated Docker/PostgreSQL verification pending)
 
 Each phase requires its own reviewed data model, migration, API contract, UI, tests, and documentation updates. No calorie restriction, fasting system, aggressive weight-loss mechanics, diagnosis, prescription, or treatment guidance is planned.

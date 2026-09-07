@@ -64,7 +64,7 @@ def test_today_notifications_use_profile_timezone_weekday_and_status(db_session)
     ])
     db_session.commit()
 
-    result = ReminderService(db_session).today(now=datetime(2026, 9, 7, 0, 30, tzinfo=timezone.utc))
+    result = ReminderService(db_session, user).today(now=datetime(2026, 9, 7, 0, 30, tzinfo=timezone.utc))
 
     assert result.timezone == "Asia/Bangkok"
     assert str(result.local_date) == "2026-09-07"
@@ -76,7 +76,7 @@ def test_today_notifications_fall_back_to_utc(db_session) -> None:
     user = User(); db_session.add(user); db_session.flush()
     db_session.add(Reminder(user_id=user.id, reminder_type=ReminderType.CUSTOM, title="UTC", reminder_time=time(8), schedule_type=ReminderScheduleType.DAILY)); db_session.commit()
 
-    result = ReminderService(db_session).today(now=datetime(2026, 9, 7, 7, 30, tzinfo=timezone.utc))
+    result = ReminderService(db_session, user).today(now=datetime(2026, 9, 7, 7, 30, tzinfo=timezone.utc))
 
     assert result.timezone == "UTC"
     assert result.reminders[0].status == "upcoming"

@@ -3,8 +3,8 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 
 from app.models.meal import Meal, MealItem
+from app.models.user import User
 from app.repositories.meal import MealRepository
-from app.repositories.user import UserRepository
 from app.schemas.meal import MealCreate, MealItemCreate, MealItemResponse, MealItemUpdate, MealListResponse, MealResponse, MealUpdate
 
 
@@ -17,22 +17,20 @@ class MealItemNotFoundError(Exception):
 
 
 class MealService:
-    def __init__(self, db: Session) -> None:
+    def __init__(self, db: Session, user: User) -> None:
         self._db = db
-        self._users = UserRepository(db)
+        self._user = user
         self._meals = MealRepository(db)
 
     def list_meals(self, limit: int, offset: int) -> MealListResponse:
-        user = self._users.get_or_create_local_user()
-        meals, total = self._meals.list_for_user(user.id, limit, offset)
+        meals, total = self._meals.list_for_user(self._user.id, limit, offset)
         return MealListResponse(items=[MealResponse.model_validate(meal) for meal in meals], total=total)
 
     def get_meal(self, meal_id: UUID) -> MealResponse:
         return MealResponse.model_validate(self._get_owned_meal(meal_id))
 
     def create_meal(self, payload: MealCreate) -> MealResponse:
-        user = self._users.get_or_create_local_user()
-        meal = Meal(user_id=user.id, **payload.model_dump())
+        meal = Meal(user_id=self._user.id, **payload.model_dump())
         self._meals.add(meal)
         self._meals.save()
         return self.get_meal(meal.id)
@@ -71,15 +69,13 @@ class MealService:
         self._meals.save()
 
     def _get_owned_meal(self, meal_id: UUID) -> Meal:
-        user = self._users.get_or_create_local_user()
-        meal = self._meals.get_for_user(user.id, meal_id)
+        meal = self._meals.get_for_user(self._user.id, meal_id)
         if meal is None:
             raise MealNotFoundError
         return meal
 
     def _get_owned_item(self, meal_id: UUID, item_id: UUID) -> MealItem:
-        user = self._users.get_or_create_local_user()
-        item = self._meals.get_item_for_user(user.id, meal_id, item_id)
+        item = self._meals.get_item_for_user(self._user.id, meal_id, item_id)
         if item is None:
             raise MealItemNotFoundError
         return item

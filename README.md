@@ -1,6 +1,6 @@
 # Personal Health Tracking Application
 
-A privacy-minded personal health tracking application. Phase 8 adds simple in-app scheduled reminders alongside the Dashboard and Analytics. It does not provide medical advice.
+A privacy-minded personal health tracking application. Phase 9 is in progress; checkpoint 9A adds password-based authentication and server-side sessions. It does not provide medical advice.
 
 ## Technology
 
@@ -14,10 +14,12 @@ A privacy-minded personal health tracking application. Phase 8 adds simple in-ap
 2. Start the stack:
 
    ```bash
-   docker compose up --build
+   docker compose up --build --force-recreate
    ```
 
-3. Open `http://localhost:5173`. The API documentation is available at `http://localhost:8000/docs`.
+   Compose waits for PostgreSQL, runs the one-off `migrate` service, then starts the backend and production nginx frontend. This is an intentional rebuild command; it does not remove a database volume.
+
+3. Open `http://localhost:5173`. The frontend proxies `/api/` to the backend on the Docker network. The API documentation is available at `http://localhost:8000/docs`.
 
 The frontend displays the API health status and provides Profile, Weight, Goals, Meals, Exercise, Analytics, and Reminders pages at `/profile`, `/weight`, `/goals`, `/meals`, `/exercise`, `/analytics`, and `/reminders`.
 
@@ -25,6 +27,15 @@ The frontend displays the API health status and provides Profile, Weight, Goals,
 
 See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for local setup, migration commands, and tests. Copy `.env.example` to `.env`; never commit that file.
 
+After applying migrations, create or claim the single initial account through the interactive local-only command (it prompts for a password of at least 12 characters and does not expose it on the command line):
+
+```bash
+cd backend
+python -m app.cli.bootstrap_user --email you@example.com
+```
+
+The application has no public sign-up endpoint. Sign in at `/login`; the browser keeps only an HttpOnly session cookie and the server stores a token hash.
+
 ## Project status
 
-Phases 0–8 are implemented and verified. Reminders are evaluated in-app when data is requested; push, email, SMS, and background delivery are not implemented.
+Phases 0–8 are implemented and verified. Phase 9A and 9B are implemented locally: authentication, authorization, migration design, production images, same-origin routing, and health/readiness checks. Phase 9C isolated PostgreSQL/Docker verification remains pending. Reminders are evaluated in-app when data is requested; push, email, SMS, and background delivery are not implemented.
