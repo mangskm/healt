@@ -11,6 +11,7 @@ const primaryItems = [
 const moreItems = [
   ["/goals", "Goals"],
   ["/analytics", "Analytics"],
+  ["/reports", "Reports"],
   ["/reminders", "Reminders"],
   ["/profile", "Profile"],
 ] as const;

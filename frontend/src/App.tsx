@@ -8,6 +8,7 @@ import { MealsPage } from "./pages/MealsPage";
 import { ExercisePage } from "./pages/ExercisePage";
 import { AnalyticsPage } from "./pages/AnalyticsPage";
 import { RemindersPage } from "./pages/RemindersPage";
+import { ReportsPage } from "./pages/ReportsPage";
 import { LoginPage } from "./pages/LoginPage";
 import { AuthProvider } from "./features/auth/AuthContext";
 import { RequireAuth } from "./features/auth/RequireAuth";
@@ -28,6 +29,7 @@ export function App() {
             <Route path="/meals" element={<MealsPage />} />
             <Route path="/exercise" element={<ExercisePage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
+            <Route path="/reports" element={<ReportsPage />} />
             <Route path="/reminders" element={<RemindersPage />} />
             <Route path="*" element={<TodayPage />} />
           </Route>

@@ -25,7 +25,8 @@
 - Production-like nginx frontend image, same-origin API proxy, dedicated Alembic migration service, and liveness/readiness checks
 - Isolated Docker/PostgreSQL end-to-end verification of fresh migrations, authenticated ownership, direct SPA routing, backup/restore, and synthetic-data cleanup
 - Post-Roadmap Iteration 1 responsive redesign: shared desktop/mobile navigation, polished Today dashboard, consistent cards/forms/states, confirmation dialogs, and lightweight success feedback
+- Post-Roadmap Iteration 2 Reports: authenticated Profile-timezone monthly summaries for Weight, direct entered Nutrition, and manual Exercise records; responsive Reports route; and server-generated, UTF-8 CSV exports for Weight, Meal Items, and Exercise with spreadsheet formula-injection protection
 
 ## Not yet implemented
 
-Water tracking, sleep tracking, habits, AI assistant, and external notification delivery remain deferred to separately approved work. Push, email, SMS, background notification workers, food databases, barcode scanning, food recognition, calorie targets, nutrition recommendations, dieting features, exercise recommendations, pace analysis, automatic calorie estimation, predictive trends, and recommendations are not implemented.
+Water tracking, sleep tracking, habits, AI assistant, external notification delivery, report snapshots, export history, persisted generated files, charts, medical interpretation, recommendations, and health judgments remain deferred to separately approved work. Push, email, SMS, background notification workers, food databases, barcode scanning, food recognition, calorie targets, nutrition recommendations, dieting features, exercise recommendations, pace analysis, automatic calorie estimation, predictive trends, and recommendations are not implemented.
