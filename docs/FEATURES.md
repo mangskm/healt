@@ -1,12 +1,12 @@
 # Features
 
-## Implemented in Phases 0–8
+## Implemented in Phases 0–9
 
 - Responsive foundational Today page
 - Visible frontend-to-backend health connection status
 - REST health endpoint with a database connectivity check
 - PostgreSQL, migration, and test infrastructure
-- Local user/profile foundation with basic optional information and unit preferences
+- Authenticated user/profile foundation with basic optional information and unit preferences
 - Profile read/update API and Profile page
 - Weight Record CRUD API with local-user ownership filtering and pagination
 - Weight page with latest measurement, history, add/edit/delete flows, empty/loading/saving/error states
@@ -21,7 +21,10 @@
 - Read-only 7d/30d Analytics page for descriptive Weight, entered Nutrition, and Exercise history
 
 - User-managed daily/weekly in-app reminders with Profile-timezone evaluation, due/upcoming state, CRUD management, and Today dashboard display
+- Password sign-in with Argon2 hashes, server-side revocable sessions, protected routes, and a local-only account bootstrap command
+- Production-like nginx frontend image, same-origin API proxy, dedicated Alembic migration service, and liveness/readiness checks
+- Isolated Docker/PostgreSQL end-to-end verification of fresh migrations, authenticated ownership, direct SPA routing, backup/restore, and synthetic-data cleanup
 
 ## Not yet implemented
 
-Water tracking, sleep tracking, habits, AI assistant, authentication, external notification delivery, and Phase 9+ features are deliberately deferred to their assigned phases. Push, email, SMS, background notification workers, food databases, barcode scanning, food recognition, calorie targets, nutrition recommendations, dieting features, exercise recommendations, pace analysis, automatic calorie estimation, predictive trends, and recommendations are not implemented.
+Water tracking, sleep tracking, habits, AI assistant, and external notification delivery remain deferred to separately approved work. Push, email, SMS, background notification workers, food databases, barcode scanning, food recognition, calorie targets, nutrition recommendations, dieting features, exercise recommendations, pace analysis, automatic calorie estimation, predictive trends, and recommendations are not implemented.

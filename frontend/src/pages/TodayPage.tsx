@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { ApiStatus } from "../features/health/ApiStatus";
 import { Link } from "react-router-dom";
 import { Dashboard, getDashboard } from "../services/api";
+import { useAuth } from "../features/auth/AuthContext";
 
 export function TodayPage() {
+  const { logout, user } = useAuth();
   const [dashboard, setDashboard] = useState<Dashboard | null>(null); const [error, setError] = useState(false);
   useEffect(() => { void getDashboard().then(setDashboard).catch(() => setError(true)); }, []);
   return (
@@ -11,6 +13,7 @@ export function TodayPage() {
       <p className="eyebrow">Personal Health Tracking</p>
       <h1>Today</h1>
       <p className="intro">A direct overview of your tracked information for today.</p>
+      <p>Signed in as {user?.email}. <button type="button" className="secondary-button" onClick={() => void logout()}>Sign out</button></p>
       <div className="quick-actions"><Link className="button-link" to="/weight">Add Weight</Link><Link className="button-link secondary-button" to="/meals">Add Meal</Link><Link className="button-link secondary-button" to="/exercise">Add Exercise</Link><Link className="button-link secondary-button" to="/goals">Manage Goals</Link><Link className="button-link secondary-button" to="/reminders">Manage reminders</Link></div>
       <Link className="button-link secondary-button" to="/analytics">View analytics</Link>
       {error && <p role="alert">Dashboard could not be loaded. Your tracking pages are still available above.</p>}

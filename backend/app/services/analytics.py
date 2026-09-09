@@ -6,20 +6,20 @@ from sqlalchemy.orm import Session, selectinload
 from app.models.weight import WeightRecord
 from app.models.meal import Meal
 from app.models.exercise import ExerciseSession
+from app.models.user import User
 from app.repositories.profile import ProfileRepository
-from app.repositories.user import UserRepository
 from app.schemas.analytics import AnalyticsResponse
 
 class AnalyticsService:
-    def __init__(self, db: Session): self.db=db; self.users=UserRepository(db); self.profiles=ProfileRepository(db)
+    def __init__(self, db: Session, user: User): self.db=db; self.user=user; self.profiles=ProfileRepository(db)
     def get(self, period: str, now: datetime | None=None) -> AnalyticsResponse:
         if period not in {'7d','30d'}: raise ValueError('Unsupported period.')
-        user=self.users.get_or_create_local_user(); profile=self.profiles.get_profile(); tz=profile.timezone if profile and profile.timezone else 'UTC'; zone=ZoneInfo(tz)
+        profile=self.profiles.get_for_user(self.user.id); tz=profile.timezone if profile and profile.timezone else 'UTC'; zone=ZoneInfo(tz)
         local_now=(now or datetime.now(timezone.utc)).astimezone(zone); end=local_now.date(); start=end-timedelta(days=int(period[:-1])-1)
         begin=datetime.combine(start,time.min,tzinfo=zone).astimezone(timezone.utc); finish=datetime.combine(end+timedelta(days=1),time.min,tzinfo=zone).astimezone(timezone.utc)
-        weights=list(self.db.scalars(select(WeightRecord).where(WeightRecord.user_id==user.id,WeightRecord.recorded_at>=begin,WeightRecord.recorded_at<finish).order_by(WeightRecord.recorded_at)))
-        meals=list(self.db.scalars(select(Meal).options(selectinload(Meal.items)).where(Meal.user_id==user.id,Meal.eaten_at>=begin,Meal.eaten_at<finish)))
-        exercises=list(self.db.scalars(select(ExerciseSession).where(ExerciseSession.user_id==user.id,ExerciseSession.performed_at>=begin,ExerciseSession.performed_at<finish)))
+        weights=list(self.db.scalars(select(WeightRecord).where(WeightRecord.user_id==self.user.id,WeightRecord.recorded_at>=begin,WeightRecord.recorded_at<finish).order_by(WeightRecord.recorded_at)))
+        meals=list(self.db.scalars(select(Meal).options(selectinload(Meal.items)).where(Meal.user_id==self.user.id,Meal.eaten_at>=begin,Meal.eaten_at<finish)))
+        exercises=list(self.db.scalars(select(ExerciseSession).where(ExerciseSession.user_id==self.user.id,ExerciseSession.performed_at>=begin,ExerciseSession.performed_at<finish)))
         dates=[start+timedelta(days=i) for i in range((end-start).days+1)]
         latest_by_day={}
         for w in weights: latest_by_day[w.recorded_at.astimezone(zone).date()]=w

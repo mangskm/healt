@@ -3,8 +3,8 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 
 from app.models.goal import Goal
+from app.models.user import User
 from app.repositories.goal import GoalRepository
-from app.repositories.user import UserRepository
 from app.schemas.goal import GoalCreate, GoalListResponse, GoalResponse, GoalUpdate
 from app.services.weight_units import to_kilograms
 
@@ -14,14 +14,13 @@ class GoalNotFoundError(Exception):
 
 
 class GoalService:
-    def __init__(self, db: Session) -> None:
+    def __init__(self, db: Session, user: User) -> None:
         self._db = db
-        self._users = UserRepository(db)
+        self._user = user
         self._goals = GoalRepository(db)
 
     def list_goals(self, limit: int, offset: int) -> GoalListResponse:
-        user = self._users.get_or_create_local_user()
-        goals, total = self._goals.list_for_user(user.id, limit, offset)
+        goals, total = self._goals.list_for_user(self._user.id, limit, offset)
         return GoalListResponse(items=[GoalResponse.model_validate(goal) for goal in goals], total=total)
 
     def get_goal(self, goal_id: UUID) -> GoalResponse:
@@ -29,8 +28,7 @@ class GoalService:
         return GoalResponse.model_validate(goal)
 
     def create_goal(self, payload: GoalCreate) -> GoalResponse:
-        user = self._users.get_or_create_local_user()
-        goal = Goal(user_id=user.id, goal_type=payload.goal_type, target_value_kg=to_kilograms(payload.target_value, payload.unit), target_date=payload.target_date, status=payload.status)
+        goal = Goal(user_id=self._user.id, goal_type=payload.goal_type, target_value_kg=to_kilograms(payload.target_value, payload.unit), target_date=payload.target_date, status=payload.status)
         self._goals.add(goal)
         self._goals.save()
         self._db.refresh(goal)
@@ -53,8 +51,7 @@ class GoalService:
         self._goals.save()
 
     def _get_owned_goal(self, goal_id: UUID) -> Goal:
-        user = self._users.get_or_create_local_user()
-        goal = self._goals.get_for_user(user.id, goal_id)
+        goal = self._goals.get_for_user(self._user.id, goal_id)
         if goal is None:
             raise GoalNotFoundError
         return goal

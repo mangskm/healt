@@ -26,7 +26,7 @@ def test_dashboard_aggregates_current_local_day_and_excludes_boundaries(db_sessi
     db_session.add(MealItem(meal_id=inside.id, food_name="Rice", quantity=1, unit=FoodUnit.SERVING, calories_kcal=200, protein_g=4)); db_session.add(MealItem(meal_id=inside.id, food_name="Fruit", quantity=1, unit=FoodUnit.PIECE))
     db_session.add(ExerciseSession(user_id=user.id, activity_type=ActivityType.WALKING, performed_at=datetime(2026, 9, 6, 3, tzinfo=timezone.utc), duration_minutes=30, distance_km=2, calories_burned_kcal=100)); db_session.commit()
     db_session.add(Reminder(user_id=user.id, reminder_type=ReminderType.WEIGHT, title="Log weight", reminder_time=time(8), schedule_type=ReminderScheduleType.DAILY)); db_session.commit()
-    dashboard = DashboardService(db_session).get_dashboard(now=datetime(2026, 9, 6, 12, tzinfo=timezone.utc))
+    dashboard = DashboardService(db_session, user).get_dashboard(now=datetime(2026, 9, 6, 12, tzinfo=timezone.utc))
     assert dashboard.timezone == "Asia/Bangkok" and dashboard.meals.count == 1
     assert dashboard.meals.calories_kcal == 200 and dashboard.meals.nutrition_missing_item_count == 2
     assert dashboard.exercise.duration_minutes == 30 and dashboard.exercise.distance_km == 2

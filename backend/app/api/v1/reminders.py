@@ -4,6 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.api.dependencies import get_current_user
+from app.models.user import User
 from app.schemas.reminder import ReminderCreate, ReminderListResponse, ReminderResponse, ReminderUpdate, TodayNotificationsResponse
 from app.services.reminder import ReminderNotFoundError, ReminderService
 
@@ -16,27 +18,27 @@ def missing(error: Exception) -> HTTPException:
 
 
 @router.get("", response_model=ReminderListResponse)
-def list_reminders(db: Session = Depends(get_db)) -> ReminderListResponse:
-    return ReminderService(db).list_reminders()
+def list_reminders(db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> ReminderListResponse:
+    return ReminderService(db, user).list_reminders()
 
 
 @router.post("", response_model=ReminderResponse, status_code=status.HTTP_201_CREATED)
-def create_reminder(payload: ReminderCreate, db: Session = Depends(get_db)) -> ReminderResponse:
-    return ReminderService(db).create_reminder(payload)
+def create_reminder(payload: ReminderCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> ReminderResponse:
+    return ReminderService(db, user).create_reminder(payload)
 
 
 @router.get("/{reminder_id}", response_model=ReminderResponse)
-def get_reminder(reminder_id: UUID, db: Session = Depends(get_db)) -> ReminderResponse:
+def get_reminder(reminder_id: UUID, db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> ReminderResponse:
     try:
-        return ReminderService(db).get_reminder(reminder_id)
+        return ReminderService(db, user).get_reminder(reminder_id)
     except ReminderNotFoundError as error:
         raise missing(error) from error
 
 
 @router.patch("/{reminder_id}", response_model=ReminderResponse)
-def update_reminder(reminder_id: UUID, payload: ReminderUpdate, db: Session = Depends(get_db)) -> ReminderResponse:
+def update_reminder(reminder_id: UUID, payload: ReminderUpdate, db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> ReminderResponse:
     try:
-        return ReminderService(db).update_reminder(reminder_id, payload)
+        return ReminderService(db, user).update_reminder(reminder_id, payload)
     except ReminderNotFoundError as error:
         raise missing(error) from error
     except ValueError as error:
@@ -44,14 +46,14 @@ def update_reminder(reminder_id: UUID, payload: ReminderUpdate, db: Session = De
 
 
 @router.delete("/{reminder_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_reminder(reminder_id: UUID, db: Session = Depends(get_db)) -> Response:
+def delete_reminder(reminder_id: UUID, db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> Response:
     try:
-        ReminderService(db).delete_reminder(reminder_id)
+        ReminderService(db, user).delete_reminder(reminder_id)
     except ReminderNotFoundError as error:
         raise missing(error) from error
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @notifications_router.get("/today", response_model=TodayNotificationsResponse)
-def today_notifications(db: Session = Depends(get_db)) -> TodayNotificationsResponse:
-    return ReminderService(db).today()
+def today_notifications(db: Session = Depends(get_db), user: User = Depends(get_current_user)) -> TodayNotificationsResponse:
+    return ReminderService(db, user).today()

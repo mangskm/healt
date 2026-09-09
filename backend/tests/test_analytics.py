@@ -30,7 +30,7 @@ def test_analytics_groups_profile_local_dates_and_describes_data(db_session) -> 
     db_session.add_all([MealItem(meal_id=meal.id, food_name="Known", quantity=1, unit=FoodUnit.PIECE, calories_kcal=100, protein_g=2), MealItem(meal_id=meal.id, food_name="Missing", quantity=1, unit=FoodUnit.PIECE)])
     db_session.add(ExerciseSession(user_id=user.id, activity_type=ActivityType.WALKING, performed_at=datetime(2026, 9, 5, 18, tzinfo=timezone.utc), duration_minutes=30, distance_km=2))
     db_session.commit()
-    result = AnalyticsService(db_session).get("7d", now=datetime(2026, 9, 6, 12, tzinfo=timezone.utc))
+    result = AnalyticsService(db_session, user).get("7d", now=datetime(2026, 9, 6, 12, tzinfo=timezone.utc))
     assert result.start_date.isoformat() == "2026-08-31" and result.end_date.isoformat() == "2026-09-06"
     assert result.weight["measurement_count"] == 2 and result.weight["series"][0]["weight_kg"] == 69
     assert result.nutrition["totals"]["calories_kcal"] == 100 and result.nutrition["nutrition_missing_item_count"] == 1

@@ -6,7 +6,7 @@ Completed foundation: project structure, React/FastAPI applications, PostgreSQL 
 
 ## Phase 1 — Profile
 
-Completed: local user/profile schema and migration, profile read/update API, frontend Profile page, validation, tests, and documentation. Authentication is deliberately not included; the current local-owner placeholder will be replaced in Phase 9.
+Completed: user/profile schema and migration, profile read/update API, frontend Profile page, validation, tests, and documentation. Phase 9 later adds authenticated ownership without changing the user UUID that owns existing records.
 
 ## Phase 2 — Weight Tracking
 
@@ -36,8 +36,8 @@ Implemented: descriptive 7/30-day weight, entered nutrition, and exercise summar
 
 Completed: local-user, in-app daily/weekly reminders with Profile-timezone due/upcoming evaluation, CRUD management, Today dashboard integration, automated tests, and PostgreSQL migration/smoke verification. No push, email, SMS, background worker, or delivery history is implemented.
 
-## Next phases
+## Phase 9 — Production Hardening
 
-1. Phase 9 — Production Hardening
+Completed: authenticated ownership with opaque server-side sessions, Argon2 password hashes, migration `0007_authentication`, local-only account bootstrap, protected frontend routes, multi-stage nginx frontend, same-origin API proxy, explicit credentialed CORS/trusted-host settings, liveness/readiness checks, and isolated fresh-PostgreSQL Docker verification. Verification included migrations, login/logout, cross-user isolation, domain flows, direct SPA routes, backup/restore, and isolated cleanup. This is not a claim of public deployment.
 
 Each phase requires its own reviewed data model, migration, API contract, UI, tests, and documentation updates. No calorie restriction, fasting system, aggressive weight-loss mechanics, diagnosis, prescription, or treatment guidance is planned.

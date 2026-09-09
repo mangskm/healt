@@ -8,8 +8,8 @@ class ProfileRepository:
     def __init__(self, db: Session) -> None:
         self._db = db
 
-    def get_profile(self) -> UserProfile | None:
-        return self._db.scalar(select(UserProfile).order_by(UserProfile.created_at.asc()).limit(1))
+    def get_for_user(self, user_id) -> UserProfile | None:
+        return self._db.scalar(select(UserProfile).where(UserProfile.user_id == user_id))
 
     def add_profile(self, profile: UserProfile) -> None:
         self._db.add(profile)

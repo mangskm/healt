@@ -17,11 +17,23 @@ Successful response (`200`):
 }
 ```
 
+`GET /api/v1/live` is a liveness check that returns `{ "status": "ok" }` without querying PostgreSQL. `GET /api/v1/ready` has the same database-readiness contract as `/health`. These endpoints do not reveal connection settings, session state, or credentials.
+
+Phase 9C exercised all three checks through the nginx same-origin proxy against an isolated PostgreSQL Compose stack. They remain intentionally unauthenticated operational endpoints; health responses contain no credential or database-URL detail.
+
+## Authentication and authorization
+
+`POST /api/v1/auth/login` accepts `{ "email", "password" }`, returns the current user, and sets an opaque HttpOnly session cookie. It returns the same `401` message for missing accounts, inactive accounts, and invalid passwords. The raw session token is never returned in JSON.
+
+`POST /api/v1/auth/logout` revokes the current server-side session when present and clears the cookie. `GET /api/v1/auth/me` returns the authenticated user's UUID and email or `401`.
+
+There is no public registration or HTTP account-claim endpoint. Initial setup uses the local interactive bootstrap command documented in the README. Except for `/health` and the auth login/logout endpoints, the API endpoints below require a valid session. A missing or expired session returns `401`; records owned by another user remain indistinguishable from missing records (`404`).
+
 ## Profile
 
 `GET /api/v1/profile`
 
-Returns the configured local profile. It returns `404` with `Profile not configured.` before the first update.
+Returns the authenticated user's profile. It returns `404` with `Profile not configured.` before the first update.
 
 `PATCH /api/v1/profile`
 
@@ -31,7 +43,7 @@ This profile stores tracking preferences and basic information only; it does not
 
 ## Weight records
 
-All records belong to the current local user. The database stores canonical `weight_kg`; requests submit `weight` with an explicit `unit` (`kg` or `lb`). Responses expose `weight_kg` so the unit is never ambiguous.
+All records belong to the authenticated user. The database stores canonical `weight_kg`; requests submit `weight` with an explicit `unit` (`kg` or `lb`). Responses expose `weight_kg` so the unit is never ambiguous.
 
 - `GET /api/v1/weight-records?limit=50&offset=0` returns `{ items, total, latest }`, ordered by `recorded_at` descending. `limit` is 1–100.
 - `POST /api/v1/weight-records` creates a record and returns `201`.
