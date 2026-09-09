@@ -96,6 +96,20 @@ Activity types are `walking`, `running`, `cycling`, `strength_training`, `swimmi
 
 `GET /api/v1/analytics?period=7d|30d` returns read-only descriptive history. Periods mean 7 or 30 local calendar dates including today, using Profile timezone or UTC fallback. Weight series selects the latest record per local date and never fabricates missing dates. Meal and Exercise daily series include zero days; nutrition sums direct entered values, counts an item as missing only when every nutrition field is absent, and never imputes values. Exercise totals duration, canonical kilometers, manually entered calories, and activity types. No analytics table or migration exists.
 
+## Reports and CSV exports
+
+`GET /api/v1/reports/monthly?month=YYYY-MM` returns an authenticated user's descriptive monthly report. Omitting `month` selects the current month in the Profile timezone, or UTC if there is no configured timezone. The response includes the month, timezone, inclusive local start/end dates, Weight measurements, direct entered Nutrition totals, and Exercise totals/activity types. The database query uses the corresponding half-open UTC range. Future months are valid and return empty sections when no records exist.
+
+Weight values use the current Profile `weight_unit` (`kg` or `lb`); `recorded_change` is `null` unless at least two measurements exist. Missing Weight dates are never created. Nutrition distinguishes no Meal Items from a value explicitly entered as `0`; only non-null values are summed, and an item is counted as missing nutrition when all four nutrition fields are absent. Exercise distance is returned in canonical `km` because there is no Profile distance preference; calories are only manually entered values. Goals and reminders are omitted because their schema cannot accurately express historical goal state or reminder completion.
+
+`GET /api/v1/exports/{weight|meals|exercise}.csv` creates an authenticated user's CSV without persisting it. Query parameters are `range=month|last_30_days|custom` (default `month`), optional `month=YYYY-MM` for a month range, and required `start=YYYY-MM-DD&end=YYYY-MM-DD` for `custom`. Date inputs are inclusive local calendar dates in the Profile timezone/UTC fallback; `start` must not be after `end`. Empty exports return a valid UTF-8-with-BOM CSV containing headers only.
+
+- Weight CSV has local timestamp, display-preference weight, unit, and note.
+- Meals CSV has one row per Meal Item with Meal context; nullable nutrition fields remain blank.
+- Exercise CSV has local timestamp, activity, duration, canonical km when entered, manually entered calories, and note.
+
+All export text is UTF-8 with a BOM for spreadsheet compatibility. Free-text cells such as notes and food names whose first non-whitespace character is `=`, `+`, `-`, or `@` are prefixed with an apostrophe to prevent spreadsheet formula execution. No password/session fields, secrets, or export contents are logged or returned outside the requested file.
+
 ## Reminders and notifications
 
 All reminders belong to the local user. `GET /api/v1/reminders`, `POST /api/v1/reminders`, `GET/PATCH/DELETE /api/v1/reminders/{id}` provide CRUD (`201` for create, `204` for delete). `reminder_type` is `weight`, `meal`, `exercise`, or `custom`; `schedule_type` is `daily` or `weekly`. Daily schedules require `day_of_week: null`; weekly schedules require `0`–`6` where Monday is `0`. Titles are required and trimmed; notes are optional.

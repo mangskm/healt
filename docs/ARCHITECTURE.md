@@ -30,6 +30,12 @@ Dashboard is a read-only composition service over existing user-scoped records; 
 
 Analytics is a read-only service over existing records. It groups 7d and 30d local calendar days through the Profile timezone (UTC fallback), converts boundaries to UTC queries, and adds no persistence or migration. It returns the latest Weight per day, direct nutrition values with explicit missing-item metadata, and Exercise duration/canonical-km/manual-calorie totals with activity breakdowns.
 
+## Reports and exports
+
+Reports use `ReportRepository` → `ReportService` / `ExportService` → API router. These read-only services always receive the authenticated `User` and include `user_id` in every Weight, Meal (with `selectinload` Meal Items), and Exercise query. A monthly report resolves a local calendar month through the Profile IANA timezone, falling back to UTC, converts its inclusive local dates to a half-open UTC query range, and returns descriptive entered-data aggregates only. CSV uses the same owned range query and timezone conversion; it is generated server-side and is not stored.
+
+Weight report values are converted from canonical kg to the current Profile weight preference. Exercise distance remains canonical km because Profile has no distance preference. Nutrition totals sum only non-null entered fields; an item is counted as missing nutrition only when all four nutrition fields are absent. Goals and reminders are intentionally omitted: current Goal status cannot reconstruct a reliable historical month-end state, and reminders are schedules rather than completion records. CSV text cells from user input are prefixed when their first non-whitespace character is `=`, `+`, `-`, or `@` to prevent spreadsheet formula interpretation.
+
 ## Reminders
 
 Reminders follow Router → Service → Repository and persist user-owned schedules. `GET /notifications/today` evaluates enabled daily/weekly schedules only when requested, using Profile timezone or UTC fallback. Local wall-clock `reminder_time` remains a database `TIME`, not a UTC timestamp. There are no occurrence rows, background jobs, push, email, SMS, or external delivery providers.

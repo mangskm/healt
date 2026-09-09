@@ -65,6 +65,10 @@ In Docker Compose, the one-off `migrate` service runs `alembic upgrade head` onl
 
 Phase 9C verified a fresh, isolated PostgreSQL volume through the complete chain `0001_profile_foundation` through `0007_authentication`, including a custom-format backup restored into a separate disposable database. The verification data and isolated volume are removed after the check; no main database is used or reset.
 
+## Post-Roadmap Iteration 2 reports
+
+Reports and CSV exports derive from the existing user-owned Weight, Meal/Meal Item, and Exercise tables. They create no report snapshot, export-history, or generated-file table, so Alembic remains at `0007_authentication`. Local-month and local-date boundaries are query-time conversions only; canonical stored values and existing migrations are unchanged.
+
 From `backend/`, after setting `DATABASE_URL`:
 
 ```bash

@@ -10,6 +10,7 @@ from app.api.v1.exercise import router as exercise_router
 from app.api.v1.dashboard import router as dashboard_router
 from app.api.v1.analytics import router as analytics_router
 from app.api.v1.reminders import notifications_router, router as reminders_router
+from app.api.v1.reports import router as reports_router
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(health_router)
@@ -23,3 +24,4 @@ api_router.include_router(dashboard_router)
 api_router.include_router(analytics_router)
 api_router.include_router(reminders_router)
 api_router.include_router(notifications_router)
+api_router.include_router(reports_router)

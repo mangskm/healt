@@ -21,7 +21,7 @@ A privacy-minded personal health tracking application. Phase 9 production harden
 
 3. Open `http://localhost:5173`. The frontend proxies `/api/` to the backend on the Docker network. The API documentation is available at `http://localhost:8000/docs`.
 
-The frontend displays the API health status and provides Profile, Weight, Goals, Meals, Exercise, Analytics, and Reminders pages at `/profile`, `/weight`, `/goals`, `/meals`, `/exercise`, `/analytics`, and `/reminders`.
+The frontend displays the API health status and provides Profile, Weight, Goals, Meals, Exercise, Analytics, Reports, and Reminders pages at `/profile`, `/weight`, `/goals`, `/meals`, `/exercise`, `/analytics`, `/reports`, and `/reminders`.
 
 ## Local development
 
@@ -43,3 +43,7 @@ Phases 0–9 are implemented and verified. Phase 9 completed authentication and 
 ## Post-Roadmap Iteration 1 — UI/UX & Responsive Redesign
 
 The existing features now share a responsive application shell, desktop sidebar, mobile navigation, consistent form/card states, destructive-action confirmation, and lightweight success feedback. This is a frontend presentation iteration only: it adds no new health domain behavior, API endpoints, or database migrations.
+
+## Post-Roadmap Iteration 2 — Reports & Export
+
+Reports adds a descriptive, authenticated monthly summary and server-generated CSV exports for Weight, Meals (one row per Meal Item), and Exercise. A month is a Profile-timezone local calendar month, with UTC fallback when no Profile timezone exists. Reports sum only entered values: no missing nutrition, calories, or activity values are estimated. CSV uses UTF-8 with a BOM for spreadsheet compatibility, displays timestamps in the Profile timezone, includes explicit units, and prefixes formula-like free-text cells for spreadsheet safety. This iteration adds no table, migration, export history, or persisted export file.

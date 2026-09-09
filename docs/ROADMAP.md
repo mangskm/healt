@@ -44,4 +44,8 @@ Completed: authenticated ownership with opaque server-side sessions, Argon2 pass
 
 Completed: frontend-only visual polish for existing routes, including a responsive application shell, intentional mobile navigation, design tokens, improved Today/Analytics/Login presentation, consistent cards and forms, loading/empty/error treatment, reusable confirmation dialogs, and success feedback. No new API, health domain feature, database change, or migration was introduced.
 
+## Post-Roadmap Iteration 2 — Reports & Export
+
+Implemented: authenticated `/reports` monthly summaries and server-generated CSV exports for Weight, Meal Items, and Exercise. Reports use Profile-timezone local calendar months with UTC fallback and only direct entered data; missing values are not estimated. CSV exports are user-owned, UTF-8/BOM, timezone-aware, explicit about units, and protected against spreadsheet formula injection. No historical Goal/reminder claims, health interpretation, table, migration, export history, or persisted CSV file was introduced.
+
 Each phase requires its own reviewed data model, migration, API contract, UI, tests, and documentation updates. No calorie restriction, fasting system, aggressive weight-loss mechanics, diagnosis, prescription, or treatment guidance is planned.
