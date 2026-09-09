@@ -1,6 +1,6 @@
 # Features
 
-## Implemented in Phases 0–9B
+## Implemented in Phases 0–9
 
 - Responsive foundational Today page
 - Visible frontend-to-backend health connection status
@@ -23,7 +23,8 @@
 - User-managed daily/weekly in-app reminders with Profile-timezone evaluation, due/upcoming state, CRUD management, and Today dashboard display
 - Password sign-in with Argon2 hashes, server-side revocable sessions, protected routes, and a local-only account bootstrap command
 - Production-like nginx frontend image, same-origin API proxy, dedicated Alembic migration service, and liveness/readiness checks
+- Isolated Docker/PostgreSQL end-to-end verification of fresh migrations, authenticated ownership, direct SPA routing, backup/restore, and synthetic-data cleanup
 
 ## Not yet implemented
 
-Water tracking, sleep tracking, habits, AI assistant, external notification delivery, and future Phase 9C verification work remain deferred to their assigned checkpoints. Push, email, SMS, background notification workers, food databases, barcode scanning, food recognition, calorie targets, nutrition recommendations, dieting features, exercise recommendations, pace analysis, automatic calorie estimation, predictive trends, and recommendations are not implemented.
+Water tracking, sleep tracking, habits, AI assistant, and external notification delivery remain deferred to separately approved work. Push, email, SMS, background notification workers, food databases, barcode scanning, food recognition, calorie targets, nutrition recommendations, dieting features, exercise recommendations, pace analysis, automatic calorie estimation, predictive trends, and recommendations are not implemented.

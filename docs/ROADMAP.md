@@ -36,8 +36,8 @@ Implemented: descriptive 7/30-day weight, entered nutrition, and exercise summar
 
 Completed: local-user, in-app daily/weekly reminders with Profile-timezone due/upcoming evaluation, CRUD management, Today dashboard integration, automated tests, and PostgreSQL migration/smoke verification. No push, email, SMS, background worker, or delivery history is implemented.
 
-## Next phases
+## Phase 9 — Production Hardening
 
-1. Phase 9 — Production Hardening (in progress: 9A authentication/authorization and 9B deployment hardening complete locally; 9C isolated Docker/PostgreSQL verification pending)
+Completed: authenticated ownership with opaque server-side sessions, Argon2 password hashes, migration `0007_authentication`, local-only account bootstrap, protected frontend routes, multi-stage nginx frontend, same-origin API proxy, explicit credentialed CORS/trusted-host settings, liveness/readiness checks, and isolated fresh-PostgreSQL Docker verification. Verification included migrations, login/logout, cross-user isolation, domain flows, direct SPA routes, backup/restore, and isolated cleanup. This is not a claim of public deployment.
 
 Each phase requires its own reviewed data model, migration, API contract, UI, tests, and documentation updates. No calorie restriction, fasting system, aggressive weight-loss mechanics, diagnosis, prescription, or treatment guidance is planned.

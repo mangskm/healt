@@ -9,7 +9,7 @@ cd backend
 pytest
 ```
 
-Database-specific migrations and PostgreSQL behavior are verified through the Compose stack. Phase 8 applies `0006_notifications`, checks the Alembic head and health endpoint, then runs a synthetic reminder CRUD/today-notification smoke test and cleans up its test data. Phase 9A's local suite verifies `0007_authentication` metadata and migration head; PostgreSQL/Docker migration verification remains a later Phase 9 checkpoint.
+Database-specific migrations and PostgreSQL behavior are verified through the Compose stack. Phase 8 applies `0006_notifications`, checks the Alembic head and health endpoint, then runs a synthetic reminder CRUD/today-notification smoke test and cleans up its test data. Phase 9 verifies a fresh isolated PostgreSQL volume through `0007_authentication`, then exercises health/readiness, login/logout, authenticated Profile/Weight/Goal/Meal/Exercise/Reminder flows, user isolation, nginx proxying, and synthetic-data cleanup.
 
 ## Frontend
 
@@ -31,4 +31,4 @@ Reminder tests cover CRUD, schedule validation, ownership, daily/weekly applicab
 
 Authentication tests cover anonymous `401` handling across protected endpoints, generic invalid credentials, HttpOnly login cookie behavior, token/password non-plaintext storage, `/auth/me`, revocation on logout, expiry, legacy bootstrap safety, and cross-user ownership isolation. Frontend tests cover sign-in, protected-route redirection, logout, and centralized expired-session recovery.
 
-Phase 9B adds liveness/readiness, credentialed-CORS wildcard rejection, production cookie defaults, and safe unexpected-error response coverage. The Docker build verification builds backend/migrate and multi-stage nginx frontend images and validates Compose configuration; Phase 9C remains responsible for the isolated, running PostgreSQL/Docker smoke test.
+Phase 9 adds liveness/readiness, credentialed-CORS wildcard rejection, production cookie defaults, safe unexpected-error response coverage, and Docker build/configuration checks. Phase 9C completed an isolated running Compose smoke test: fresh migration chain, same-origin nginx routes including direct SPA paths, opaque-cookie login/logout, cross-user `404` isolation, and a custom-format PostgreSQL backup restored into a separate disposable database. Its frontend healthcheck also verifies nginx over `127.0.0.1` to avoid an Alpine `localhost` IPv6 mismatch.

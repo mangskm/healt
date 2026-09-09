@@ -8,6 +8,8 @@ Credentialed CORS origins are an explicit configuration list and cannot use `*`.
 
 Use `docker compose up --build --force-recreate` to intentionally replace containers with current source-derived images. This does not remove data volumes. Never use `docker compose down -v`, remove volumes, or reset a database merely to troubleshoot an image.
 
+The frontend healthcheck probes `http://127.0.0.1:8080/` inside nginx. The server configuration listens on IPv4, so using `localhost` may resolve to IPv6 in Alpine and report a false unhealthy state. Phase 9C verified the complete stack with a separately named Compose project, alternate host ports, and a fresh PostgreSQL volume. Use that isolation pattern for destructive verification cleanup; never direct it at a main or production project.
+
 ## Back up and restore
 
 Backups contain personal health data. Store them in encrypted, access-controlled storage and never commit them. Obtain database credentials through the environment or a secure prompt; do not put passwords in command history or documentation.

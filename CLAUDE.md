@@ -22,6 +22,7 @@
 - Authentication is server-side opaque-session authentication. Resolve the current user with the request dependency, never by selecting the first database user. Password hashes use Argon2 through the established library; raw passwords and raw session tokens must never be logged, stored, or returned in JSON.
 - The initial account is created or claimed only through `python -m app.cli.bootstrap_user`; do not add a public claim or signup endpoint without a separately approved scope.
 - Docker Compose uses a one-off Alembic `migrate` service before backend startup. The production-like frontend is nginx with a same-origin `/api/` proxy; do not revert it to a Vite dev server for deployment.
+- The nginx container healthcheck must probe the configured IPv4 listener (`127.0.0.1`), not an ambiguous `localhost` IPv6 resolution. Keep deployment verification isolated from any main database or Compose project.
 - Keep credentialed CORS origin lists explicit (never `*`), use trusted-host configuration, and log only method/path/status/duration—never request bodies, cookies, passwords, tokens, or database URLs.
 
 ## Engineering rules

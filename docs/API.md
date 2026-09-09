@@ -19,6 +19,8 @@ Successful response (`200`):
 
 `GET /api/v1/live` is a liveness check that returns `{ "status": "ok" }` without querying PostgreSQL. `GET /api/v1/ready` has the same database-readiness contract as `/health`. These endpoints do not reveal connection settings, session state, or credentials.
 
+Phase 9C exercised all three checks through the nginx same-origin proxy against an isolated PostgreSQL Compose stack. They remain intentionally unauthenticated operational endpoints; health responses contain no credential or database-URL detail.
+
 ## Authentication and authorization
 
 `POST /api/v1/auth/login` accepts `{ "email", "password" }`, returns the current user, and sets an opaque HttpOnly session cookie. It returns the same `401` message for missing accounts, inactive accounts, and invalid passwords. The raw session token is never returned in JSON.

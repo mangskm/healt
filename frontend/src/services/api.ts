@@ -7,7 +7,7 @@ import type { Reminder, ReminderInput, TodayNotifications } from "../types/remin
 
 export interface Dashboard { timezone: string; date: string; profile: { preferred_name: string | null; weight_unit: string | null } | null; latest_weight: { weight_kg: number; recorded_at: string } | null; active_goals: { id: string; target_value_kg: number; target_date: string | null; status: string }[]; meals: { count: number; item_count: number; nutrition_item_count: number; nutrition_missing_item_count: number; calories_kcal: number; protein_g: number; carbohydrates_g: number; fat_g: number }; exercise: { count: number; duration_minutes: number; distance_km: number; distance_session_count: number; calories_burned_kcal: number; calories_entered_session_count: number }; reminders: { id: string; reminder_type: string; title: string; reminder_time: string; schedule_type: string; day_of_week: number | null; status: "upcoming" | "due" }[]; }
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? "http://localhost:8000" : "");
 const unauthorizedEvent = "health-app:unauthorized";
 
 async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {

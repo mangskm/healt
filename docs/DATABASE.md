@@ -63,6 +63,8 @@ Use `python -m app.cli.bootstrap_user --email you@example.com` from `backend/` t
 
 In Docker Compose, the one-off `migrate` service runs `alembic upgrade head` only after PostgreSQL is healthy. The backend never calls `Base.metadata.create_all()` and does not race another backend instance to run migrations.
 
+Phase 9C verified a fresh, isolated PostgreSQL volume through the complete chain `0001_profile_foundation` through `0007_authentication`, including a custom-format backup restored into a separate disposable database. The verification data and isolated volume are removed after the check; no main database is used or reset.
+
 From `backend/`, after setting `DATABASE_URL`:
 
 ```bash
