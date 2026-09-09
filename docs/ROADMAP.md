@@ -40,4 +40,8 @@ Completed: local-user, in-app daily/weekly reminders with Profile-timezone due/u
 
 Completed: authenticated ownership with opaque server-side sessions, Argon2 password hashes, migration `0007_authentication`, local-only account bootstrap, protected frontend routes, multi-stage nginx frontend, same-origin API proxy, explicit credentialed CORS/trusted-host settings, liveness/readiness checks, and isolated fresh-PostgreSQL Docker verification. Verification included migrations, login/logout, cross-user isolation, domain flows, direct SPA routes, backup/restore, and isolated cleanup. This is not a claim of public deployment.
 
+## Post-Roadmap Iteration 1 — UI/UX & Responsive Redesign
+
+Completed: frontend-only visual polish for existing routes, including a responsive application shell, intentional mobile navigation, design tokens, improved Today/Analytics/Login presentation, consistent cards and forms, loading/empty/error treatment, reusable confirmation dialogs, and success feedback. No new API, health domain feature, database change, or migration was introduced.
+
 Each phase requires its own reviewed data model, migration, API contract, UI, tests, and documentation updates. No calorie restriction, fasting system, aggressive weight-loss mechanics, diagnosis, prescription, or treatment guidance is planned.

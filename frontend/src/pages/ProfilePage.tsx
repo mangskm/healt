@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { getProfile, updateProfile } from "../services/api";
 import type { Profile, ProfileUpdate } from "../types/profile";
+import { useToast } from "../components/UiProviders";
 
 interface ProfileDraft {
   preferred_name: string;
@@ -30,6 +31,7 @@ function toDraft(profile: Profile): ProfileDraft {
 }
 
 export function ProfilePage() {
+  const { success } = useToast();
   const [draft, setDraft] = useState<ProfileDraft>(defaultDraft);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -63,7 +65,7 @@ export function ProfilePage() {
     try {
       const profile = await updateProfile(payload);
       setDraft(toDraft(profile));
-      setMessage("Profile saved.");
+      setMessage("Profile saved."); success("Profile saved.");
     } catch {
       setError("Your profile could not be saved. Check the values and try again.");
     } finally {

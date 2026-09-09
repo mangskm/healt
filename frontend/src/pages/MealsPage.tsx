@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { createMeal, createMealItem, deleteMeal, deleteMealItem, getMeal, listMeals, updateMeal, updateMealItem } from "../services/api";
 import type { FoodUnit, Meal, MealItemInput, MealType } from "../types/meal";
 import { calculateMealTotals } from "../utils/mealTotals";
+import { useConfirm, useToast } from "../components/UiProviders";
 
 interface ItemDraft {
   existingId?: string;
@@ -49,6 +50,7 @@ function toItemPayload(item: ItemDraft): MealItemInput {
 }
 
 export function MealsPage() {
+  const confirm = useConfirm(); const { success } = useToast();
   const [meals, setMeals] = useState<Meal[]>([]);
   const [draft, setDraft] = useState<MealDraft>(initialDraft);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -92,7 +94,7 @@ export function MealsPage() {
       await Promise.all(removedItemIds.map((itemId) => deleteMealItem(savedMeal.id, itemId)));
       const meal = await getMeal(savedMeal.id);
       setMeals((current) => [meal, ...current.filter((item) => item.id !== meal.id)]);
-      setDraft(initialDraft()); setEditingId(null); setRemovedItemIds([]); setMessage(editingId ? "Meal updated." : "Meal saved.");
+      setDraft(initialDraft()); setEditingId(null); setRemovedItemIds([]); const feedback = editingId ? "Meal updated." : "Meal saved."; setMessage(feedback); success(feedback);
     } catch { setError("Meal could not be saved. Check the values and try again."); }
     finally { setSaving(false); }
   }
@@ -101,7 +103,8 @@ export function MealsPage() {
     setDraft(toDraft(meal)); setEditingId(meal.id); setRemovedItemIds([]); setError(null); setMessage(null);
   }
 
-  function removeItem(index: number) {
+  async function removeItem(index: number) {
+    if (!await confirm({ title: "Remove food item?", description: "This item will be removed when you save the meal.", confirmLabel: "Remove" })) return;
     setDraft((current) => {
       const item = current.items[index];
       if (item.existingId) setRemovedItemIds((ids) => [...ids, item.existingId!]);
@@ -110,8 +113,9 @@ export function MealsPage() {
   }
 
   async function removeMeal(id: string) {
+    if (!await confirm({ title: "Delete meal?", description: "This meal and all of its food items will be removed permanently." })) return;
     setDeletingId(id); setError(null);
-    try { await deleteMeal(id); setMeals((current) => current.filter((meal) => meal.id !== id)); setMessage("Meal deleted."); }
+    try { await deleteMeal(id); setMeals((current) => current.filter((meal) => meal.id !== id)); setMessage("Meal deleted."); success("Meal deleted."); }
     catch { setError("Meal could not be deleted. Try again."); }
     finally { setDeletingId(null); }
   }
@@ -132,7 +136,7 @@ export function MealsPage() {
         <label>Protein g (optional)<input aria-label={`Protein ${index + 1}`} type="number" min="0" step="0.001" value={item.protein} onChange={(event) => updateItem(index, "protein", event.target.value)} /></label>
         <label>Carbohydrates g (optional)<input aria-label={`Carbohydrates ${index + 1}`} type="number" min="0" step="0.001" value={item.carbohydrates} onChange={(event) => updateItem(index, "carbohydrates", event.target.value)} /></label>
         <label>Fat g (optional)<input aria-label={`Fat ${index + 1}`} type="number" min="0" step="0.001" value={item.fat} onChange={(event) => updateItem(index, "fat", event.target.value)} /></label>
-        <button className="secondary-button" type="button" onClick={() => removeItem(index)}>Remove item</button>
+        <button className="secondary-button" type="button" onClick={() => void removeItem(index)}>Remove item</button>
       </div>)}</fieldset>
       <button className="secondary-button" type="button" onClick={() => setDraft((current) => ({ ...current, items: [...current.items, emptyItem()] }))}>Add food item</button>
       {error && <p role="alert">{error}</p>}{message && <p aria-live="polite">{message}</p>}<button disabled={saving} type="submit">{saving ? "Saving…" : editingId ? "Update meal" : "Save meal"}</button>

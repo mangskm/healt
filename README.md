@@ -39,3 +39,7 @@ The application has no public sign-up endpoint. Sign in at `/login`; the browser
 ## Project status
 
 Phases 0–9 are implemented and verified. Phase 9 completed authentication and authorization, migration `0007_authentication`, production-like images, same-origin routing, liveness/readiness checks, and an isolated PostgreSQL/Docker end-to-end verification with a fresh migration chain, synthetic owned data, backup/restore, and cleanup. This verifies the repository's deployment path; it is not a claim that a public production environment has been deployed. Reminders are evaluated in-app when data is requested; push, email, SMS, and background delivery are not implemented.
+
+## Post-Roadmap Iteration 1 — UI/UX & Responsive Redesign
+
+The existing features now share a responsive application shell, desktop sidebar, mobile navigation, consistent form/card states, destructive-action confirmation, and lightweight success feedback. This is a frontend presentation iteration only: it adds no new health domain behavior, API endpoints, or database migrations.

@@ -1,36 +1,24 @@
 import { useEffect, useState } from "react";
-import { ApiStatus } from "../features/health/ApiStatus";
 import { Link } from "react-router-dom";
+import { EmptyState, LoadingState } from "../components/UiProviders";
+import { ApiStatus } from "../features/health/ApiStatus";
 import { Dashboard, getDashboard } from "../services/api";
-import { useAuth } from "../features/auth/AuthContext";
+
+const formatDate = (date: string, timezone: string) => new Intl.DateTimeFormat(undefined, { weekday: "long", month: "long", day: "numeric", timeZone: timezone }).format(new Date(`${date}T12:00:00Z`));
 
 export function TodayPage() {
-  const { logout, user } = useAuth();
   const [dashboard, setDashboard] = useState<Dashboard | null>(null); const [error, setError] = useState(false);
   useEffect(() => { void getDashboard().then(setDashboard).catch(() => setError(true)); }, []);
-  return (
-    <main className="page-shell">
-      <p className="eyebrow">Personal Health Tracking</p>
-      <h1>Today</h1>
-      <p className="intro">A direct overview of your tracked information for today.</p>
-      <p>Signed in as {user?.email}. <button type="button" className="secondary-button" onClick={() => void logout()}>Sign out</button></p>
-      <div className="quick-actions"><Link className="button-link" to="/weight">Add Weight</Link><Link className="button-link secondary-button" to="/meals">Add Meal</Link><Link className="button-link secondary-button" to="/exercise">Add Exercise</Link><Link className="button-link secondary-button" to="/goals">Manage Goals</Link><Link className="button-link secondary-button" to="/reminders">Manage reminders</Link></div>
-      <Link className="button-link secondary-button" to="/analytics">View analytics</Link>
-      {error && <p role="alert">Dashboard could not be loaded. Your tracking pages are still available above.</p>}
-      {!dashboard && !error && <p>Loading dashboard…</p>}
-      {dashboard && <section className="dashboard-grid">
-        <article className="status-card"><h2>{dashboard.profile?.preferred_name ? `${dashboard.profile.preferred_name}'s summary` : "Profile"}</h2><p>{dashboard.profile ? `Timezone: ${dashboard.timezone}` : "Profile not configured. Dates use UTC until you add a timezone."}</p></article>
-        <article className="status-card"><h2>Latest weight</h2>{dashboard.latest_weight ? <p className="latest-weight">{dashboard.latest_weight.weight_kg} kg</p> : <p>No weight records yet.</p>}</article>
-        <article className="status-card"><h2>Active goals</h2>{dashboard.active_goals.length ? dashboard.active_goals.map((goal) => <p key={goal.id}>{goal.target_value_kg} kg{goal.target_date ? ` · ${goal.target_date}` : ""}</p>) : <p>No active goals.</p>}</article>
-        <article className="status-card"><h2>Meals today</h2>{dashboard.meals.count ? <><p>{dashboard.meals.count} meals · {dashboard.meals.item_count} items</p><p>Entered nutrition: {dashboard.meals.calories_kcal} kcal · {dashboard.meals.protein_g} g protein</p>{dashboard.meals.nutrition_missing_item_count > 0 && <p>Some food items have missing nutrition values.</p>}</> : <p>No meals today.</p>}</article>
-        <article className="status-card"><h2>Exercise today</h2>{dashboard.exercise.count ? <><p>{dashboard.exercise.count} sessions · {dashboard.exercise.duration_minutes} min</p>{dashboard.exercise.distance_session_count > 0 && <p>{dashboard.exercise.distance_km} km entered distance</p>}{dashboard.exercise.calories_entered_session_count > 0 && <p>{dashboard.exercise.calories_burned_kcal} kcal manually entered</p>}</> : <p>No exercise today.</p>}</article>
-        <article className="status-card"><h2>Today's reminders</h2>{dashboard.reminders.length ? dashboard.reminders.map((reminder) => <p key={reminder.id}><strong>{reminder.reminder_time.slice(0, 5)}</strong> · {reminder.title} · {reminder.status === "due" ? "Due" : "Upcoming"}</p>) : <><p>No reminders scheduled for today.</p><Link className="button-link secondary-button" to="/reminders">Manage reminders</Link></>}</article>
-      </section>}
-      <section className="status-card" aria-labelledby="service-status-title">
-        <h2 id="service-status-title">Service status</h2>
-        <ApiStatus />
-      </section>
-      <p className="disclaimer">This application is not a substitute for professional medical advice.</p>
-    </main>
-  );
+  const profileName = dashboard?.profile?.preferred_name;
+  return <main className="page-shell today-page">
+    <header className="page-header today-header"><div><p className="eyebrow">Personal health tracking</p><h1>{profileName ? `Hello, ${profileName}` : "Today"}</h1><p className="intro">{dashboard ? `${formatDate(dashboard.date, dashboard.timezone)} · ${dashboard.timezone}` : "A clear, descriptive view of what you tracked today."}</p></div><div className="quick-actions" aria-label="Quick actions"><Link className="button" to="/weight">Add weight</Link><Link className="button button-secondary" to="/meals">Add meal</Link><Link className="button button-secondary" to="/exercise">Add exercise</Link></div></header>
+    {error && <section className="alert alert-error" role="alert"><strong>Dashboard could not be loaded.</strong><span>Your tracking pages are still available from navigation.</span></section>}
+    {!dashboard && !error && <LoadingState label="Loading your dashboard…" />}
+    {dashboard && <><section className="stat-grid" aria-label="Today at a glance"><article className="stat-card"><span className="stat-label">Latest weight</span><strong>{dashboard.latest_weight ? `${dashboard.latest_weight.weight_kg} kg` : "Not entered"}</strong><span>{dashboard.latest_weight ? new Date(dashboard.latest_weight.recorded_at).toLocaleDateString() : "No weight records yet."}</span></article><article className="stat-card"><span className="stat-label">Meals today</span><strong>{dashboard.meals.count}</strong><span>{dashboard.meals.count ? `${dashboard.meals.item_count} logged items` : "No meals today."}</span></article><article className="stat-card"><span className="stat-label">Exercise today</span><strong>{dashboard.exercise.duration_minutes} min</strong><span>{dashboard.exercise.count ? `${dashboard.exercise.count} sessions` : "No sessions logged"}</span></article><article className="stat-card"><span className="stat-label">Active goals</span><strong>{dashboard.active_goals.length}</strong><span>{dashboard.active_goals.length ? "Personal targets" : "No active goals"}</span></article></section>
+      <section className="content-grid"><article className="card nutrition-card"><div className="section-heading"><div><p className="eyebrow">Nutrition entered</p><h2>Meal summary</h2></div><Link to="/meals">View meals</Link></div>{dashboard.meals.count ? <div className="metric-grid"><span><strong>{dashboard.meals.calories_kcal}</strong> kcal</span><span><strong>{dashboard.meals.protein_g}g</strong> protein</span><span><strong>{dashboard.meals.carbohydrates_g}g</strong> carbs</span><span><strong>{dashboard.meals.fat_g}g</strong> fat</span></div> : <EmptyState title="No meals recorded today." action={<Link className="button button-secondary" to="/meals">Add a meal</Link>} />}{dashboard.meals.nutrition_missing_item_count > 0 && <p className="muted-note">Nutrition was not entered for {dashboard.meals.nutrition_missing_item_count} item(s).</p>}</article>
+      <article className="card"><div className="section-heading"><div><p className="eyebrow">Activity</p><h2>Exercise summary</h2></div><Link to="/exercise">View exercise</Link></div>{dashboard.exercise.count ? <div className="metric-grid"><span><strong>{dashboard.exercise.duration_minutes}</strong> min</span><span><strong>{dashboard.exercise.distance_km}</strong> km</span><span><strong>{dashboard.exercise.calories_burned_kcal}</strong> kcal entered</span></div> : <EmptyState title="No exercise sessions today." action={<Link className="button button-secondary" to="/exercise">Add exercise</Link>} />}</article>
+      <article className="card"><div className="section-heading"><div><p className="eyebrow">Your schedule</p><h2>Today's reminders</h2></div><Link to="/reminders">Manage</Link></div>{dashboard.reminders.length ? <ul className="timeline-list">{dashboard.reminders.map((reminder) => <li key={reminder.id}><time>{reminder.reminder_time.slice(0, 5)}</time><p>{reminder.title}</p><span className={`badge badge-${reminder.status}`}>{reminder.status === "due" ? "Due" : "Upcoming"}</span></li>)}</ul> : <EmptyState title="No reminders scheduled for today." action={<Link className="button button-secondary" to="/reminders">Manage reminders</Link>} />}</article>
+      <article className="card"><div className="section-heading"><div><p className="eyebrow">Goals</p><h2>Active targets</h2></div><Link to="/goals">Manage</Link></div>{dashboard.active_goals.length ? <ul className="compact-list">{dashboard.active_goals.map((goal) => <li key={goal.id}><strong>{goal.target_value_kg} kg</strong><span>{goal.target_date ? `Target date ${goal.target_date}` : "No target date"}</span></li>)}</ul> : <EmptyState title="No active goals." action={<Link className="button button-secondary" to="/goals">Set a goal</Link>} />}</article></section></>}
+    <section className="service-status"><ApiStatus /></section><p className="disclaimer">This application is for personal tracking and is not a substitute for professional medical advice.</p>
+  </main>;
 }
