@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { createExerciseSession, deleteExerciseSession, listExerciseSessions, updateExerciseSession } from "../services/api";
 import type { ActivityType, DistanceUnit, ExerciseInput, ExerciseSession } from "../types/exercise";
 import { convertDistance, formatDistance } from "../utils/distanceUnits";
+import { useConfirm, useToast } from "../components/UiProviders";
 
 interface Draft { activityType: ActivityType; performedAt: string; duration: string; distance: string; distanceUnit: DistanceUnit; calories: string; note: string; }
 const localDateTime = (date = new Date()) => new Date(date.getTime() - date.getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
@@ -11,6 +12,7 @@ const emptyDraft = (): Draft => ({ activityType: "walking", performedAt: localDa
 const numberOrNull = (value: string) => value === "" ? null : Number(value);
 
 export function ExercisePage() {
+  const confirm = useConfirm(); const { success } = useToast();
   const [sessions, setSessions] = useState<ExerciseSession[]>([]);
   const [draft, setDraft] = useState<Draft>(emptyDraft);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -28,9 +30,9 @@ export function ExercisePage() {
     return null;
   }
   function payload(): ExerciseInput { return { activity_type: draft.activityType, performed_at: new Date(draft.performedAt).toISOString(), duration_minutes: Number(draft.duration), distance: numberOrNull(draft.distance), distance_unit: draft.distance ? draft.distanceUnit : null, calories_burned_kcal: numberOrNull(draft.calories), note: draft.note.trim() || null }; }
-  async function submit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); const invalid = validate(); if (invalid) { setError(invalid); return; } setSaving(true); setError(null); setMessage(null); try { const saved = editingId ? await updateExerciseSession(editingId, payload()) : await createExerciseSession(payload()); setSessions((current) => [saved, ...current.filter((item) => item.id !== saved.id)]); setDraft(emptyDraft()); setEditingId(null); setMessage(editingId ? "Exercise session updated." : "Exercise session saved."); } catch { setError("Exercise session could not be saved. Check the values and try again."); } finally { setSaving(false); } }
+  async function submit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); const invalid = validate(); if (invalid) { setError(invalid); return; } setSaving(true); setError(null); setMessage(null); try { const saved = editingId ? await updateExerciseSession(editingId, payload()) : await createExerciseSession(payload()); setSessions((current) => [saved, ...current.filter((item) => item.id !== saved.id)]); setDraft(emptyDraft()); setEditingId(null); const feedback = editingId ? "Exercise session updated." : "Exercise session saved."; setMessage(feedback); success(feedback); } catch { setError("Exercise session could not be saved. Check the values and try again."); } finally { setSaving(false); } }
   function edit(session: ExerciseSession) { setEditingId(session.id); setDraft({ activityType: session.activity_type, performedAt: localDateTime(new Date(session.performed_at)), duration: String(session.duration_minutes), distance: session.distance_km === null ? "" : String(convertDistance(session.distance_km, "km", draft.distanceUnit).toFixed(2)), distanceUnit: draft.distanceUnit, calories: session.calories_burned_kcal === null ? "" : String(session.calories_burned_kcal), note: session.note ?? "" }); setError(null); setMessage(null); }
-  async function remove(id: string) { setDeletingId(id); setError(null); try { await deleteExerciseSession(id); setSessions((current) => current.filter((session) => session.id !== id)); setMessage("Exercise session deleted."); } catch { setError("Exercise session could not be deleted. Try again."); } finally { setDeletingId(null); } }
+  async function remove(id: string) { if (!await confirm({ title: "Delete exercise session?", description: "This activity record and its note will be removed permanently." })) return; setDeletingId(id); setError(null); try { await deleteExerciseSession(id); setSessions((current) => current.filter((session) => session.id !== id)); setMessage("Exercise session deleted."); success("Exercise session deleted."); } catch { setError("Exercise session could not be deleted. Try again."); } finally { setDeletingId(null); } }
 
   return <main className="page-shell"><Link className="back-link" to="/">← Today</Link><p className="eyebrow">Personal Health Tracking</p><h1>Exercise</h1><p className="intro">Record an activity session. Calories burned are optional values you enter yourself; this page does not estimate or recommend anything.</p>
     <form className="profile-form" onSubmit={submit} noValidate><h2>{editingId ? "Edit exercise session" : "Add exercise session"}</h2>

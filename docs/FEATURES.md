@@ -24,6 +24,7 @@
 - Password sign-in with Argon2 hashes, server-side revocable sessions, protected routes, and a local-only account bootstrap command
 - Production-like nginx frontend image, same-origin API proxy, dedicated Alembic migration service, and liveness/readiness checks
 - Isolated Docker/PostgreSQL end-to-end verification of fresh migrations, authenticated ownership, direct SPA routing, backup/restore, and synthetic-data cleanup
+- Post-Roadmap Iteration 1 responsive redesign: shared desktop/mobile navigation, polished Today dashboard, consistent cards/forms/states, confirmation dialogs, and lightweight success feedback
 
 ## Not yet implemented
 

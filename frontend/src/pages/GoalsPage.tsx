@@ -5,11 +5,13 @@ import { createGoal, deleteGoal, getProfile, listGoals, listWeightRecords, updat
 import type { Goal, GoalStatus } from "../types/goal";
 import type { WeightUnit } from "../types/profile";
 import { convertWeight, formatWeight } from "../utils/weightUnits";
+import { useConfirm, useToast } from "../components/UiProviders";
 
 interface GoalDraft { targetValue: string; unit: WeightUnit; targetDate: string; status: GoalStatus; }
 const initialDraft = (unit: WeightUnit = "kg"): GoalDraft => ({ targetValue: "", unit, targetDate: "", status: "active" });
 
 export function GoalsPage() {
+  const confirm = useConfirm(); const { success } = useToast();
   const [goals, setGoals] = useState<Goal[]>([]);
   const [latestWeight, setLatestWeight] = useState<number | null>(null);
   const [draft, setDraft] = useState<GoalDraft>(initialDraft);
@@ -41,7 +43,7 @@ export function GoalsPage() {
     try {
       const goal = editingId ? await updateGoal(editingId, payload) : await createGoal({ goal_type: "target_weight", ...payload });
       setGoals((current) => [goal, ...current.filter((item) => item.id !== goal.id)]);
-      setEditingId(null); setDraft(initialDraft(draft.unit)); setMessage(editingId ? "Goal updated." : "Goal saved.");
+      setEditingId(null); setDraft(initialDraft(draft.unit)); const feedback = editingId ? "Goal updated." : "Goal saved."; setMessage(feedback); success(feedback);
     } catch { setError("Goal could not be saved. Check the values and try again."); } finally { setSaving(false); }
   }
 
@@ -52,8 +54,9 @@ export function GoalsPage() {
   }
 
   async function remove(id: string) {
+    if (!await confirm({ title: "Delete goal?", description: "This target will be removed permanently." })) return;
     setDeletingId(id); setError(null);
-    try { await deleteGoal(id); setGoals((current) => current.filter((goal) => goal.id !== id)); setMessage("Goal deleted."); }
+    try { await deleteGoal(id); setGoals((current) => current.filter((goal) => goal.id !== id)); setMessage("Goal deleted."); success("Goal deleted."); }
     catch { setError("Goal could not be deleted. Try again."); } finally { setDeletingId(null); }
   }
 

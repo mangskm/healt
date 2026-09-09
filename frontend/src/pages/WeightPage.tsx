@@ -5,6 +5,7 @@ import { createWeightRecord, deleteWeightRecord, getProfile, listWeightRecords, 
 import type { WeightUnit } from "../types/profile";
 import type { WeightRecord, WeightRecordInput } from "../types/weight";
 import { convertWeight, formatWeight } from "../utils/weightUnits";
+import { useConfirm, useToast } from "../components/UiProviders";
 
 interface WeightDraft {
   weight: string;
@@ -28,6 +29,7 @@ function sortByRecordedAt(records: WeightRecord[]): WeightRecord[] {
 }
 
 export function WeightPage() {
+  const confirm = useConfirm(); const { success } = useToast();
   const [records, setRecords] = useState<WeightRecord[]>([]);
   const [latest, setLatest] = useState<WeightRecord | null>(null);
   const [draft, setDraft] = useState<WeightDraft>(defaultDraft);
@@ -95,7 +97,7 @@ export function WeightPage() {
       applySavedRecord(record);
       setDraft(defaultDraft(draft.unit));
       setEditingId(null);
-      setMessage(editingId ? "Weight record updated." : "Weight record saved.");
+      const feedback = editingId ? "Weight record updated." : "Weight record saved."; setMessage(feedback); success(feedback);
     } catch {
       setError("Weight record could not be saved. Check the values and try again.");
     } finally {
@@ -116,6 +118,7 @@ export function WeightPage() {
   }
 
   async function removeRecord(id: string) {
+    if (!await confirm({ title: "Delete weight record?", description: "This measurement and its note will be removed permanently." })) return;
     setDeletingId(id);
     setError(null);
     try {
@@ -129,7 +132,7 @@ export function WeightPage() {
         setEditingId(null);
         setDraft(defaultDraft(draft.unit));
       }
-      setMessage("Weight record deleted.");
+      setMessage("Weight record deleted."); success("Weight record deleted.");
     } catch {
       setError("Weight record could not be deleted. Try again.");
     } finally {
